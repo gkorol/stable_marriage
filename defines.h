@@ -14,7 +14,7 @@ struct pos{
 };
 
 // matrix cell
-struct pos{
+struct cell{
     char wall;      // 1 - wall cell, 0 - else
     char registry;  // # of registry, 0 - else
     id* agent;      // &id if agent, NULL - else

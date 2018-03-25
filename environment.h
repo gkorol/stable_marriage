@@ -17,6 +17,9 @@ public:
   int free_poisition(pos p);  // Return wether the position is free of obstacles
 
 private:
+
+  int n;
+  cell[n][n] grid;
 };
 
 #endif // ENVIRONMENT_H
