@@ -1,6 +1,8 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
+class Agent;
+
 // agent ID
 struct id{
     char sex;
@@ -15,10 +17,17 @@ struct pos{
 
 // matrix cell
 struct cell{
+    char free;      // Make it easy to check: 1 - free, INF - else
     char wall;      // 1 - wall cell, 0 - else
-    char registry;  // # of registry, 0 - else
-    id* agent;      // &id if agent, NULL - else
+    int  registry;  // # of registry, -1 - else
+    Agent* agent;   // &id if agent, NULL - else
 };
+
+// Grid size
+#define N 20
+
+// Total number of registries
+#define REG_TOTAL 4
 
 // Status
 #define MARRIED 1
