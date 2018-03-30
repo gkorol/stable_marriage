@@ -39,6 +39,13 @@ void Agent::run() {
       // ?
     break;
     case TO_REGISTRY:
+      pos reg;
+      reg = env->get_nearst_registry(my_position);
+      env->get_path_to_reg(my_position, reg, path);
+      if (!path.empty())
+        ps = ROUTE_TO_REG;
+      else
+        cout << "ERROR GETTING PATH TO REGISTRY!" << endl;
     break;
     case ROUTE_TO_REG:
     break;

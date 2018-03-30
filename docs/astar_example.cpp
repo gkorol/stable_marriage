@@ -1,3 +1,8 @@
+////////////////////////////////////////////
+// From https://github.com/hjweide/a-star //
+//       with some modifications          //
+////////////////////////////////////////////
+
 #include <queue>
 #include <limits>
 #include <cmath>

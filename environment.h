@@ -3,6 +3,8 @@
 
 #include <cstddef>
 #include <math.h>
+#include <queue>
+#include <limits>
 #include "defines.h"
 #include "agent.h"
 
@@ -15,6 +17,14 @@
 // ...  ...  ...
 
 using namespace std;
+
+class Node {
+  public:
+    int x;
+    int y;
+    float cost;
+    Node(int x, int y, float c) : x(x),y(y),cost(c) {}
+};
 
 class Environment
 {
@@ -31,6 +41,8 @@ private:
   cell grid[N][N];              // Main matrix
   pos  registries[REG_TOTAL];   // Array of registries. Positions here must be
                                 // the same in the matrix
+  void astar(cell matrix[][N], pos start, pos goal, vector<pos> &path);
+  float h(int x1, int y1, int x2, int y2);
 };
 
 #endif // ENVIRONMENT_H
