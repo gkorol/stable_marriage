@@ -135,8 +135,19 @@ pos Environment::get_nearst_registry(pos p) {
   return closest_pos;
 }
 
-int Environment::free_poisition(pos p) {
-  return grid[p.x][p.y].free;
+int Environment::free_poisition(int x, int y) {
+  return grid[x][y].free;
+}
+
+void Environment::update_position(Agent* a, int new_x, int new_y) {
+  const float INF = std::numeric_limits<float>::infinity();
+
+  grid[a->get_position().x][a->get_position().y].free = 1;
+  grid[a->get_position().x][a->get_position().y].agent = NULL;
+
+  // Check if new position is free??
+  grid[new_x][new_y].free = INF;
+  grid[new_x][new_y].agent = a;
 }
 
 void Environment::get_path_to_reg(pos start, pos target, vector<pos> &p) {

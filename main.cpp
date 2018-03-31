@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <unistd.h>
 #include "environment.h"
 #include "agent.h"
 
@@ -69,13 +70,19 @@ int main(int argc, char** argv) {
     myfile.close();
   }
 
-  print_grid(env);
+  // print_grid(env);
 
   // Main loop
   for( int t=0; t<MAX_IT; t++) {
     cout << "cycle: " << t << endl;
     for( int i=0; i<(couples*2); i++) {
       env->get_agent( i )->run();
+      std::system("clear");
+      print_grid(env);
+      cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
+      <<"> @ "<< t << " cycles" << endl << endl << endl;
+      if (t>0)
+        sleep(1);
     }
   }
 

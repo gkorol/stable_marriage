@@ -3,11 +3,21 @@
 
 // Agent::Agent(char sex, int name) : my_id.sex(sex), my_id.name(name) {
 Agent::Agent(char sex, int name, Environment* e){
-   my_id.sex = sex;
-   my_id.name = name;
-   my_position.x = -1;
-   my_position.y = -1;
-   env = e;
+  static bool seeded = false;
+
+  if(!seeded) {
+      srand(time(NULL));
+      seeded = true;
+  }
+
+  walking_pattern = rand() % 2;
+
+  my_id.sex = sex;
+  my_id.name = name;
+  my_position.x = -1;
+  my_position.y = -1;
+  env = e;
+  ps = INIT;
 }
 
 Agent::~Agent() {
@@ -39,6 +49,8 @@ void Agent::run() {
       } else {
         ps = WANDER_S;
       }
+
+      step();
     break;
     case PROPOSE_S:
       // ?
@@ -96,8 +108,68 @@ int Agent::marry_me(id proposer) {
   return 0;
 }
 
+void Agent::step() {
+  // 3 possible walk patterns
+  // walks in line by line, column by column or in diagonals
+  // int pattern = rand() % 2;
+  bool success = false;
+  int temp_x = 0;
+  int temp_y = 0;
+
+  while(!success) {
+    switch (walking_pattern) {
+      case 0:
+        // keeps y and x incremenents
+        if (my_position.x+1 < N) {
+          temp_x = my_position.x+1;
+          temp_y = my_position.y;
+        } else {
+          // Matrix bound
+          temp_x = 0;
+          temp_y = my_position.y;
+        }
+        break;
+      case 1:
+        // keeps x and y incremenents
+        if (my_position.y+1 < N) {
+          temp_x = my_position.x;
+          temp_y = my_position.y+1;
+        } else {
+          // Matrix bound
+          temp_x = my_position.x;
+          temp_y = 0;
+        }
+        break;
+      case 2:
+        // y and x incremenent
+        if (my_position.x+1 < N && my_position.y+1 < N) {
+          temp_x = my_position.x+1;
+          temp_y = my_position.y+1;
+        } else {
+          // Matrix bound
+          temp_x = my_position.x;
+          temp_y = 0;
+        }
+        break;
+    }
+    if (env->free_poisition(temp_x,temp_y) == 1){
+      env->update_position(this, temp_x, temp_y);
+      my_position.x = temp_x;
+      my_position.y = temp_y;
+      success = true;
+    } else {
+      // change walking pattern and try again
+      walking_pattern = rand() % 2;
+    }
+  }
+}
+
 int Agent::propose(Agent* proposed) {
   proposed->marry_me(my_id);
+}
+
+pos Agent::get_position() {
+  return my_position;
 }
 
 int Agent::init_prefs(vector<int> p) {

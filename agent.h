@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <cstddef>
+#include <time.h>
 #include "defines.h"
 #include "environment.h"
 
@@ -22,6 +23,8 @@ public:
 	void print_prefs();
   int init_prefs(vector<int> p);
 	void init_position(int x, int y);
+	void step();
+	pos get_position();
   int marry_me(id proposer);  // Gets asked by other agents
 
 private:
@@ -37,6 +40,7 @@ private:
   Environment* env;         // Pointer to environment object
   char engaged;             // Signal for next cycle that proposal was accepted
 	vector<pos> path;					// Vector of positions that lead to the registry
+	int walking_pattern;			// Keeps track of the walking pattern through cycles
 };
 
 #endif
