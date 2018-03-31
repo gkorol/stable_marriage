@@ -39,11 +39,11 @@ void Environment::print_cell(int x, int y) {
   if(grid[x][y].free == 1){
     printf(" _ ");
   } else if (grid[x][y].registry > 0) {
-    printf(" C ");
+    printf("\e[34m C \e[0m");
   } else if (grid[x][y].wall == 1) {
-    printf(" # ");
+    printf("\e[91m # \e[0m");
   } else if (grid[x][y].agent != NULL) {
-    printf(" %c ", grid[x][y].agent->get_id().sex);
+    printf("\e[92m %c \e[0m", grid[x][y].agent->get_id().sex);
   }
 }
 
