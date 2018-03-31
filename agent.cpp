@@ -2,15 +2,20 @@
 
 
 // Agent::Agent(char sex, int name) : my_id.sex(sex), my_id.name(name) {
-Agent::Agent(char sex, int name, int x, int y, Environment* e){
+Agent::Agent(char sex, int name, Environment* e){
    my_id.sex = sex;
    my_id.name = name;
-   my_position.x = x;
-   my_position.y = y;
+   my_position.x = -1;
+   my_position.y = -1;
    env = e;
 }
 
 Agent::~Agent() {
+}
+
+void Agent::init_position(int x, int y) {
+  my_position.x = x;
+  my_position.y = y;
 }
 
 void Agent::run() {

@@ -15,12 +15,13 @@ class Environment;
 class Agent
 {
 public:
-	Agent(char sex, int name, int x, int y, Environment* e);
+	Agent(char sex, int name, Environment* e);
 	~Agent();
   void run();   // Run the FSM
   id get_id();
 	void print_prefs();
   int init_prefs(vector<int> p);
+	void init_position(int x, int y);
   int marry_me(id proposer);  // Gets asked by other agents
 
 private:

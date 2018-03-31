@@ -15,6 +15,9 @@ int main(int argc, char** argv) {
 
   Environment* env = new Environment();
 
+  // ADD WALLS TO THE ENVIRONMENT
+  env->add_walls();
+
   // Read from input file
   string line;
   ifstream myfile ("input");
@@ -29,7 +32,10 @@ int main(int argc, char** argv) {
           couples = std::atoi(line.substr(pos + 1).c_str());
           regs = std::atoi(line.substr(0, pos).c_str());
           cout << "Total of couples: " << couples << endl;
-          cout << "Total of regs:    " << regs << endl;
+          cout << "Total of regs:    " << regs << endl << endl;
+
+          // ADD REGISTRIES TO THE ENVIRONMENT
+          env->add_registries(regs);
         }
       } else if (line_c > 0 && line_c < couples) {
         // Male lines
@@ -40,9 +46,10 @@ int main(int argc, char** argv) {
         while (iss >> number)
           pref.push_back(number);
 
-        Agent* m = new Agent('m',line_c,1,line_c,env);
+        Agent* m = new Agent('m',line_c,env);
         m->init_prefs(pref);
-        m->print_prefs();
+        env->add_agent(m);
+        // m->print_prefs();
       } else if (line_c >= couples) {
         // Female lines
         vector<int> pref;
@@ -52,17 +59,15 @@ int main(int argc, char** argv) {
         while (iss >> number)
           pref.push_back(number);
 
-        Agent* f = new Agent('f',line_c-3,1,line_c,env);
+        Agent* f = new Agent('f',line_c-3,env);
         f->init_prefs(pref);
-        f->print_prefs();
+        env->add_agent(f);
+        // f->print_prefs();
       }
       line_c++;
     }
     myfile.close();
   }
-
-  // ADD WALLS TO THE REGISTRIES
-  env->add_registries(regs);
 
   print_grid(env);
 
@@ -70,7 +75,12 @@ int main(int argc, char** argv) {
 }
 
 void print_grid(Environment* e) {
+  printf("   ");
+  for (int i=0; i<N; i++)
+    printf("%2d ", i);
+  cout << endl;
   for (int i=0; i<N; i++) {
+    printf("%2d ", i);
     for (int j=0; j<N; j++) {
       e->print_cell(i,j);
     }

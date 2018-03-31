@@ -42,11 +42,13 @@ public:
   void print_cell(int x, int y);
   void add_walls();
   void add_registries(int number);
+  void add_agent(Agent* a);
 
 private:
   cell grid[N][N];              // Main matrix
   pos  registries[REG_TOTAL];   // Array of registries. Positions here must be
                                 // the same in the matrix
+  vector<Agent*> active_ags;     // Vector of active agents
   void astar(cell matrix[][N], pos start, pos goal, vector<pos> &path);
   float h(int x1, int y1, int x2, int y2);
 };

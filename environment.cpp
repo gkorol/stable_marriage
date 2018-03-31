@@ -40,25 +40,58 @@ void Environment::print_cell(int x, int y) {
     printf(" _ ");
   } else if (grid[x][y].registry > 0) {
     printf(" C ");
+  } else if (grid[x][y].wall == 1) {
+    printf(" # ");
+  } else if (grid[x][y].agent != NULL) {
+    printf(" %c ", grid[x][y].agent->get_id().sex);
   }
 }
 
 void Environment::add_walls() {
+  const float INF = std::numeric_limits<float>::infinity();
+  // ~ N/5 Ex; 20x20 -> 4 walls
+  // Walls from N/5 to N/2 cells
+  int number = ceil(N/5);
 
+  for( int i=1; i<=number; i++) {
+    int size = rand() % (int)ceil(N/2) + (int)ceil(N/5);
+    int x = rand() % (N-1); // any x from 0 to N-1
+    int y = rand() % (N-size); // any y from 0 to N-size
+    for( int j=0; j<size; j++){
+      grid[x][y+j].free = INF;
+      grid[x][y+j].wall = 1;
+    }
+  }
 }
 
 void Environment::add_registries(int number) {
   const float INF = std::numeric_limits<float>::infinity();
 
-  for( int i=1; i<=number; i++) {
+  for( int i=0; i<number; i++) {
     for(;;){
       int x = rand() % (N-1);
       int y = rand() % (N-1);
       if (grid[x][y].free == 1) {
         grid[x][y].free = INF;
-        grid[x][y].registry = i;
+        grid[x][y].registry = i+1;
         break;
       }
+    }
+  }
+}
+
+void Environment::add_agent(Agent* a) {
+  const float INF = std::numeric_limits<float>::infinity();
+
+  for(;;){
+    int x = rand() % (N-1);
+    int y = rand() % (N-1);
+    if (grid[x][y].free == 1) {
+      a->init_position(x,y);
+      grid[x][y].free = INF;
+      grid[x][y].agent = a;
+      active_ags.push_back(a);
+      break;
     }
   }
 }
