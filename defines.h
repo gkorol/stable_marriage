@@ -4,7 +4,7 @@
 class Agent;
 
 // Maximum number of iterations
-#define MAX_IT 100
+#define MAX_IT 10
 
 // Grid size
 #define N 20

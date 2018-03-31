@@ -43,6 +43,7 @@ public:
   void add_walls();
   void add_registries(int number);
   void add_agent(Agent* a);
+  Agent* get_agent(int i);
 
 private:
   cell grid[N][N];              // Main matrix

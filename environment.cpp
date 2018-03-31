@@ -96,6 +96,10 @@ void Environment::add_agent(Agent* a) {
   }
 }
 
+Agent* Environment::get_agent(int i) {
+  return active_ags.at(i);
+}
+
 Agent* Environment::get_nearst_agent(pos p, char s) {
   int x = p.x;
   int y = p.y;

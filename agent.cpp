@@ -19,6 +19,7 @@ void Agent::init_position(int x, int y) {
 }
 
 void Agent::run() {
+  // printf("<%c,%d> Running\n", my_id.sex, my_id.name);
   switch (ps) {
     case INIT:
       // Init procedures ?

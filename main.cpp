@@ -29,8 +29,8 @@ int main(int argc, char** argv) {
       if (line_c == 0) {
         string::size_type pos = line.find(' ');
         if(line.npos != pos) {
-          couples = std::atoi(line.substr(pos + 1).c_str());
-          regs = std::atoi(line.substr(0, pos).c_str());
+          couples = std::atoi(line.substr(0, pos).c_str());
+          regs = std::atoi(line.substr(pos + 1).c_str());
           cout << "Total of couples: " << couples << endl;
           cout << "Total of regs:    " << regs << endl << endl;
 
@@ -70,6 +70,14 @@ int main(int argc, char** argv) {
   }
 
   print_grid(env);
+
+  // Main loop
+  for( int t=0; t<MAX_IT; t++) {
+    cout << "cycle: " << t << endl;
+    for( int i=0; i<(couples*2); i++) {
+      env->get_agent( i )->run();
+    }
+  }
 
   return 0;
 }
