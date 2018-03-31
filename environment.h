@@ -2,7 +2,9 @@
 #define ENVIRONMENT_H
 
 #include <cstddef>
+#include <stdio.h>
 #include <math.h>
+#include <time.h>
 #include <queue>
 #include <limits>
 #include "defines.h"
@@ -36,6 +38,10 @@ public:
   pos get_nearst_registry(pos p);                    // Return position of the closest registry
   void get_path_to_reg(pos start, pos target, vector<pos> &p);   // Return (?) path to position p
   int free_poisition(pos p);                         // Return wether the position is free of obstacles
+  cell (*get_grid(void))[N][N];
+  void print_cell(int x, int y);
+  void add_walls();
+  void add_registries(int number);
 
 private:
   cell grid[N][N];              // Main matrix

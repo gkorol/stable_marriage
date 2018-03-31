@@ -3,6 +3,27 @@
 
 class Agent;
 
+// Maximum number of iterations
+#define MAX_IT 100
+
+// Grid size
+#define N 20
+
+// Total number of registries
+#define REG_TOTAL 4
+
+// Status
+#define MARRIED 1
+#define SINGLE  0
+
+// Sex
+#define MALE 'm'
+#define FEMALE 'f'
+
+// Agent states
+enum ag_states {INIT, WANDER_S, PROPOSE_S, TO_REGISTRY, ROUTE_TO_REG,
+                WAIT_FIANCE, MARRY, DIVORCE, WANDER_M, PROPOSE_M};
+
 // agent ID
 struct id{
     char sex;
@@ -22,23 +43,5 @@ struct cell{
     int  registry;  // # of registry, -1 - else
     Agent* agent;   // &id if agent, NULL - else
 };
-
-// Grid size
-#define N 20
-
-// Total number of registries
-#define REG_TOTAL 4
-
-// Status
-#define MARRIED 1
-#define SINGLE  0
-
-// Sex
-#define MALE 'm'
-#define FEMALE 'f'
-
-// Agent states
-enum ag_states {INIT, WANDER_S, PROPOSE_S, TO_REGISTRY, ROUTE_TO_REG,
-                WAIT_FIANCE, MARRY, DIVORCE, WANDER_M, PROPOSE_M};
 
 #endif

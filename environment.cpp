@@ -10,6 +10,12 @@ bool operator==(const Node &n1, const Node &n2) {
 }
 
 Environment::Environment() {
+  static bool seeded = false;
+
+  if(!seeded) {
+      srand(time(NULL));
+      seeded = true;
+  }
 
   for (int i=0;i<N;i++) {
     for (int j=0;j<N;j++) {
@@ -23,6 +29,38 @@ Environment::Environment() {
 
 Environment::~Environment() {
 
+}
+
+cell (*Environment::get_grid(void))[N][N] {
+  return &grid;
+}
+
+void Environment::print_cell(int x, int y) {
+  if(grid[x][y].free == 1){
+    printf(" _ ");
+  } else if (grid[x][y].registry > 0) {
+    printf(" C ");
+  }
+}
+
+void Environment::add_walls() {
+
+}
+
+void Environment::add_registries(int number) {
+  const float INF = std::numeric_limits<float>::infinity();
+
+  for( int i=1; i<=number; i++) {
+    for(;;){
+      int x = rand() % (N-1);
+      int y = rand() % (N-1);
+      if (grid[x][y].free == 1) {
+        grid[x][y].free = INF;
+        grid[x][y].registry = i;
+        break;
+      }
+    }
+  }
 }
 
 Agent* Environment::get_nearst_agent(pos p, char s) {

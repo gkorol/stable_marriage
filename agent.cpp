@@ -16,8 +16,7 @@ Agent::~Agent() {
 void Agent::run() {
   switch (ps) {
     case INIT:
-      // Init procedures
-      init();
+      // Init procedures ?
       ps = WANDER_S;
     break;
     case WANDER_S:
@@ -95,8 +94,16 @@ int Agent::propose(Agent* proposed) {
   proposed->marry_me(my_id);
 }
 
-int Agent::init() {
-  // ?
+int Agent::init_prefs(vector<int> p) {
+  for(int i=0; i<p.size(); i++) {
+    preferences.push_back(p[i]);
+  }
+}
+
+void Agent::print_prefs() {
+  for(int i=0; i<preferences.size(); i++) {
+    printf("Ag<%c,%d> preferences[%d] = %d\n", my_id.sex, my_id.name, i, preferences[i]);
+  }
 }
 
 char Agent::get_opposed_sex() {
