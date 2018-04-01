@@ -4,13 +4,13 @@
 class Agent;
 
 // Maximum number of iterations
-#define MAX_IT 10
+#define MAX_IT 30
 
 // Grid size
-#define N 10
+#define N 15
 
 // Total number of registries
-#define REG_TOTAL 4
+// #define REG_TOTAL 4
 
 // Status
 #define MARRIED 1

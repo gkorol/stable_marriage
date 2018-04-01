@@ -18,6 +18,7 @@ Agent::Agent(char sex, int name, Environment* e){
   my_position.y = -1;
   env = e;
   ps = INIT;
+  status = SINGLE;
 }
 
 Agent::~Agent() {
@@ -35,7 +36,7 @@ void Agent::run() {
     case INIT:
       // Init procedures ?
       ps = WANDER_S;
-    break;
+      break;
     case WANDER_S:
       step();
       neighbor = env->get_nearst_agent(my_position,get_opposed_sex());
@@ -47,38 +48,59 @@ void Agent::run() {
           // It said YES :)
           printf("<%c,%d> said yes to <%c,%d>\n", neighbor->get_id().sex,
                   neighbor->get_id().name, get_id().sex, get_id().name);
+          status = MARRIED;
           ps = TO_REGISTRY;
+        } else {
+          printf("<%c,%d> was not interested in <%c,%d>\n", neighbor->get_id().sex,
+                  neighbor->get_id().name, get_id().sex, get_id().name);
+          ps = WANDER_S;
         }
       } else {
         ps = WANDER_S;
         printf("Nobody around me <%c,%d> @ %d,%d\n", get_id().sex, get_id().name,
                 my_position.x, my_position.y);
       }
-    break;
+      break;
     case PROPOSE_S:
       // ?
     break;
     case TO_REGISTRY:
       pos reg;
       reg = env->get_nearst_registry(my_position);
-      env->get_path_to_reg(my_position, reg, path);
-      if (!path.empty())
+      printf("Going to registry at %d,%d <%c,%d>\n", reg.x, reg.y, get_id().sex, get_id().name);
+      // env->get_path_to_reg(my_position, reg, path);
+      // if (!path.empty())
         ps = ROUTE_TO_REG;
-      else
-        cout << "ERROR GETTING PATH TO REGISTRY!" << endl;
-    break;
+      // else
+        // cout << "ERROR GETTING PATH TO REGISTRY!" << endl;
+      break;
     case ROUTE_TO_REG:
-    break;
+      printf("Going to registry <%c,%d> @ %d,%d\n", get_id().sex,
+            get_id().name, my_position.x, my_position.y);
+      ps = WAIT_FIANCE;
+      break;
     case WAIT_FIANCE:
-    break;
+      printf("Waiting for my fiance <%c,%d> @ %d,%d\n", get_id().sex,
+            get_id().name, my_position.x, my_position.y);
+      ps = MARRY;
+      break;
     case MARRY:
-    break;
+      printf("Getting married <%c,%d> @ %d,%d\n", get_id().sex,
+            get_id().name, my_position.x, my_position.y);
+      ps = WANDER_M;
+      break;
     case DIVORCE:
-    break;
+      printf("Getting divorce <%c,%d> @ %d,%d\n", get_id().sex,
+            get_id().name, my_position.x, my_position.y);
+      ps = WANDER_S;
+      break;
     case WANDER_M:
-    break;
+      printf("Married wandering <%c,%d> @ %d,%d\n", get_id().sex,
+            get_id().name, my_position.x, my_position.y);
+      ps = DIVORCE;
+      break;
     case PROPOSE_M:
-    break;
+      break;
   }
 }
 
@@ -89,26 +111,28 @@ id Agent::get_id() {
 int Agent::marry_me(id proposer) {
   if(status == SINGLE) {
     // Will accept any proposal if single
+    status = MARRIED;
     return 1;
   }
   else {
     // Will check if suitor is of higher preference than actual partner
-    std::vector<int>::iterator proposer_it = std::find(preferences.begin(), preferences.end(), proposer.name);
-    std::vector<int>::iterator partner_it = std::find(preferences.begin(), preferences.end(), partner.name);
-
-    if (proposer_it != preferences.end() || partner_it != preferences.end()) {
-      cout << "Error receving proposition: Agent not found in prefs!" << "/n";
-      return -1;
-    }
-
-    int proposer_pref = std::distance(preferences.begin(), proposer_it);
-    int partner_pref = std::distance(preferences.begin(), partner_it);
-
-    if(proposer_pref > partner_pref) {
-      return 1;
-    }
+    // std::vector<int>::iterator proposer_it = std::find(preferences.begin(), preferences.end(), proposer.name);
+    // std::vector<int>::iterator partner_it = std::find(preferences.begin(), preferences.end(), partner.name);
+    //
+    // if (proposer_it != preferences.end() || partner_it != preferences.end()) {
+    //   cout << "Error receving proposition: Agent not found in prefs!" << "/n";
+    //   return -1;
+    // }
+    //
+    // int proposer_pref = std::distance(preferences.begin(), proposer_it);
+    // int partner_pref = std::distance(preferences.begin(), partner_it);
+    //
+    // if(proposer_pref > partner_pref) {
+    //   return 1;
+    // }
+    return 0;
   }
-  return 0;
+
 }
 
 void Agent::step() {

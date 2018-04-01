@@ -48,8 +48,9 @@ public:
 
 private:
   cell grid[N][N];              // Main matrix
-  pos  registries[REG_TOTAL];   // Array of registries. Positions here must be
+  // pos  registries[REG_TOTAL];   // Array of registries. Positions here must be
                                 // the same in the matrix
+  vector<pos> registries;
   vector<Agent*> active_ags;     // Vector of active agents
   void astar(cell matrix[][N], pos start, pos goal, vector<pos> &path);
   float h(int x1, int y1, int x2, int y2);

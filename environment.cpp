@@ -77,6 +77,10 @@ void Environment::add_registries(int number) {
       if (grid[x][y].free == 1) {
         grid[x][y].free = INF;
         grid[x][y].registry = i+1;
+        pos p;
+        p.x = x;
+        p.y = y;
+        registries.push_back(p);
         break;
       }
     }
@@ -92,8 +96,8 @@ void Environment::add_agent(Agent* a) {
     if (grid[x][y].free == 1) {
       a->init_position(x,y);
       grid[x][y].free = INF;
-      grid[x][y].agent = a;
       active_ags.push_back(a);
+      grid[x][y].agent = active_ags.back();
       break;
     }
   }
@@ -107,11 +111,10 @@ Agent* Environment::get_nearst_agent(pos p, char s) {
   int x = p.x;
   int y = p.y;
 
-  printf("Looking for %c\n", s);
   for (int i=x-2;i<x+3;i++) {
     for (int j=y-2;j<y+3;j++) {
       if ( i >= 0 && i < N && j >= 0 && j < N) {
-        printf("Visting %d,%d\n", i,j);
+        // printf("Visting %d,%d\n", i,j);
         if (grid[i][j].agent != NULL && i != p.x && j != p.y)
           if (grid[i][j].agent->get_id().sex == s)
             // Returns the first agent of sex s
@@ -128,12 +131,14 @@ pos Environment::get_nearst_registry(pos p) {
   float temp_dist = 0.0;
   pos   closest_pos;
 
-  for (int i=0; i<REG_TOTAL+1; i++) {
-    temp_dist = sqrt( pow( (p.x-registries[i].x),2) + pow( (p.y-registries[i].y),2) );
+  for (int i=0; i<registries.size(); i++) {
+    temp_dist = sqrt( pow( ((float)p.x-(float)registries.at(i).x),2.0) + pow( ((float)p.y-(float)registries.at(i).y),2.0) );
+    // printf("Registry #%d @ %d,%d is %f cells from %d,%d\n", i, registries.at(i).x,
+        registries.at(i).y, temp_dist, p.x, p.y);
     if (temp_dist < shorter_dist) {
       shorter_dist = temp_dist;
-      closest_pos.x = registries[i].x;
-      closest_pos.y = registries[i].y;
+      closest_pos.x = registries.at(i).x;
+      closest_pos.y = registries.at(i).y;
     }
   }
 
@@ -150,7 +155,6 @@ void Environment::update_position(Agent* a, int new_x, int new_y) {
   grid[a->get_position().x][a->get_position().y].free = 1;
   grid[a->get_position().x][a->get_position().y].agent = NULL;
 
-  // Check if new position is free??
   grid[new_x][new_y].free = INF;
   grid[new_x][new_y].agent = a;
 }
