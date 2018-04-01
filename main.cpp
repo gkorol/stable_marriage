@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
           // ADD REGISTRIES TO THE ENVIRONMENT
           env->add_registries(regs);
         }
-      } else if (line_c > 0 && line_c < couples) {
+      } else if (line_c > 0 && line_c <= couples) {
         // Male lines
         vector<int> pref;
         string temp = line.substr(1);
@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
         m->init_prefs(pref);
         env->add_agent(m);
         // m->print_prefs();
-      } else if (line_c >= couples) {
+      } else if (line_c > couples) {
         // Female lines
         vector<int> pref;
         string temp = line.substr(1);
@@ -77,12 +77,12 @@ int main(int argc, char** argv) {
     cout << "cycle: " << t << endl;
     for( int i=0; i<(couples*2); i++) {
       env->get_agent( i )->run();
-      std::system("clear");
+      // std::system("clear");
       print_grid(env);
       cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
       <<"> @ "<< t << " cycles" << endl << endl << endl;
-      if (t>0)
-        sleep(1);
+      // if (t>0)
+      //   sleep(1);
     }
   }
 

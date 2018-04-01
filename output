@@ -1,0 +1,371 @@
+Total of couples: 3
+Total of regs:    4
+
+cycle: 0
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  m  _  #  #  _  _  _  C  _  _ 
+ 2  _  _  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  m  _  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  m  _  _ 
+ 5  _  f  _  _  _  _  _  _  _  _ 
+ 6  _  _  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  f  f  _  _  _ 
+ 8  _  _  _  _  C  _  _  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <m,1> @ 0 cycles
+
+
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  m  _  #  #  _  _  _  C  _  _ 
+ 2  _  _  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  m  _  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  m  _  _ 
+ 5  _  f  _  _  _  _  _  _  _  _ 
+ 6  _  _  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  f  f  _  _  _ 
+ 8  _  _  _  _  C  _  _  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <m,2> @ 0 cycles
+
+
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  m  _  #  #  _  _  _  C  _  _ 
+ 2  _  _  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  m  _  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  m  _  _ 
+ 5  _  f  _  _  _  _  _  _  _  _ 
+ 6  _  _  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  f  f  _  _  _ 
+ 8  _  _  _  _  C  _  _  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <m,3> @ 0 cycles
+
+
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  m  _  #  #  _  _  _  C  _  _ 
+ 2  _  _  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  m  _  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  m  _  _ 
+ 5  _  f  _  _  _  _  _  _  _  _ 
+ 6  _  _  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  f  f  _  _  _ 
+ 8  _  _  _  _  C  _  _  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <f,1> @ 0 cycles
+
+
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  m  _  #  #  _  _  _  C  _  _ 
+ 2  _  _  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  m  _  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  m  _  _ 
+ 5  _  f  _  _  _  _  _  _  _  _ 
+ 6  _  _  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  f  f  _  _  _ 
+ 8  _  _  _  _  C  _  _  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <f,2> @ 0 cycles
+
+
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  m  _  #  #  _  _  _  C  _  _ 
+ 2  _  _  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  m  _  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  m  _  _ 
+ 5  _  f  _  _  _  _  _  _  _  _ 
+ 6  _  _  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  f  f  _  _  _ 
+ 8  _  _  _  _  C  _  _  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <f,3> @ 0 cycles
+
+
+cycle: 1
+Looking for f
+Visting 0,0
+Visting 0,1
+Visting 0,2
+Visting 0,3
+Visting 1,0
+Visting 1,1
+Visting 1,2
+Visting 1,3
+Visting 2,0
+Visting 2,1
+Visting 2,2
+Visting 2,3
+Visting 3,0
+Visting 3,1
+Visting 3,2
+Visting 3,3
+Nobody around me <m,1> @ 1,1
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  _  m  #  #  _  _  _  C  _  _ 
+ 2  _  _  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  m  _  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  m  _  _ 
+ 5  _  f  _  _  _  _  _  _  _  _ 
+ 6  _  _  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  f  f  _  _  _ 
+ 8  _  _  _  _  C  _  _  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <m,1> @ 1 cycles
+
+
+Looking for f
+Visting 1,3
+Visting 1,4
+Visting 1,5
+Visting 1,6
+Visting 1,7
+Visting 2,3
+Visting 2,4
+Visting 2,5
+Visting 2,6
+Visting 2,7
+Visting 3,3
+Visting 3,4
+Visting 3,5
+Visting 3,6
+Visting 3,7
+Visting 4,3
+Visting 4,4
+Visting 4,5
+Visting 4,6
+Visting 4,7
+Visting 5,3
+Visting 5,4
+Visting 5,5
+Visting 5,6
+Visting 5,7
+Nobody around me <m,2> @ 3,5
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  _  m  #  #  _  _  _  C  _  _ 
+ 2  _  _  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  _  m  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  m  _  _ 
+ 5  _  f  _  _  _  _  _  _  _  _ 
+ 6  _  _  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  f  f  _  _  _ 
+ 8  _  _  _  _  C  _  _  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <m,2> @ 1 cycles
+
+
+Looking for f
+Visting 3,5
+Visting 3,6
+Visting 3,7
+Visting 3,8
+Visting 3,9
+Visting 4,5
+Visting 4,6
+Visting 4,7
+Visting 4,8
+Visting 4,9
+Visting 5,5
+Visting 5,6
+Visting 5,7
+Visting 5,8
+Visting 5,9
+Visting 6,5
+Visting 6,6
+Visting 6,7
+Visting 6,8
+Visting 6,9
+Visting 7,5
+Found agent around me <m,3> @ 5,7
+<f,2> said yes to <m,3>
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  _  m  #  #  _  _  _  C  _  _ 
+ 2  _  _  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  _  m  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  _  _  _ 
+ 5  _  f  _  _  _  _  _  m  _  _ 
+ 6  _  _  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  f  f  _  _  _ 
+ 8  _  _  _  _  C  _  _  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <m,3> @ 1 cycles
+
+
+Looking for m
+Visting 6,4
+Visting 6,5
+Visting 6,6
+Visting 6,7
+Visting 6,8
+Visting 7,4
+Visting 7,5
+Visting 7,6
+Visting 7,7
+Visting 7,8
+Visting 8,4
+Visting 8,5
+Visting 8,6
+Visting 8,7
+Visting 8,8
+Visting 9,4
+Visting 9,5
+Visting 9,6
+Visting 9,7
+Visting 9,8
+Nobody around me <f,1> @ 8,6
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  _  m  #  #  _  _  _  C  _  _ 
+ 2  _  _  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  _  m  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  _  _  _ 
+ 5  _  f  _  _  _  _  _  m  _  _ 
+ 6  _  _  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  f  _  _  _  _ 
+ 8  _  _  _  _  C  _  f  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <f,1> @ 1 cycles
+
+
+Looking for m
+Visting 5,4
+Visting 5,5
+Visting 5,6
+Visting 5,7
+Found agent around me <f,2> @ 7,6
+<m,3> said yes to <f,2>
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  _  m  #  #  _  _  _  C  _  _ 
+ 2  _  _  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  _  m  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  _  _  _ 
+ 5  _  f  _  _  _  _  _  m  _  _ 
+ 6  _  _  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  _  f  _  _  _ 
+ 8  _  _  _  _  C  _  f  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <f,2> @ 1 cycles
+
+
+Looking for m
+Visting 4,0
+Visting 4,1
+Visting 4,2
+Visting 4,3
+Visting 5,0
+Visting 5,1
+Visting 5,2
+Visting 5,3
+Visting 6,0
+Visting 6,1
+Visting 6,2
+Visting 6,3
+Visting 7,0
+Visting 7,1
+Visting 7,2
+Visting 7,3
+Visting 8,0
+Visting 8,1
+Visting 8,2
+Visting 8,3
+Nobody around me <f,3> @ 6,1
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  _  m  #  #  _  _  _  C  _  _ 
+ 2  _  _  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  _  m  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  _  _  _ 
+ 5  _  _  _  _  _  _  _  m  _  _ 
+ 6  _  f  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  _  f  _  _  _ 
+ 8  _  _  _  _  C  _  f  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <f,3> @ 1 cycles
+
+
+cycle: 2
+Looking for f
+Visting 0,0
+Visting 0,1
+Visting 0,2
+Visting 0,3
+Visting 1,0
+Visting 1,1
+Visting 1,2
+Visting 1,3
+Visting 2,0
+Visting 2,1
+Visting 2,2
+Visting 2,3
+Visting 3,0
+Visting 3,1
+Visting 3,2
+Visting 3,3
+Visting 4,0
+Visting 4,1
+Visting 4,2
+Visting 4,3
+Nobody around me <m,1> @ 2,1
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  _  _  #  #  _  _  _  C  _  _ 
+ 2  _  m  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  _  m  _  _  _  _ 
+ 4  _  _  _  _  _  _  _  _  _  _ 
+ 5  _  _  _  _  _  _  _  m  _  _ 
+ 6  _  f  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  _  f  _  _  _ 
+ 8  _  _  _  _  C  _  f  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <m,1> @ 2 cycles
+
+
+Looking for f
+Visting 1,4
+Visting 1,5
+Visting 1,6
+Visting 1,7
+Visting 1,8
+Visting 2,4
+Visting 2,5
+Visting 2,6
+Visting 2,7
+Visting 2,8
+Visting 3,4
+Visting 3,5
+Visting 3,6
+Visting 3,7
+Visting 3,8
+Visting 4,4
+Visting 4,5
+Visting 4,6
+Visting 4,7
+Visting 4,8
+Visting 5,4
+Visting 5,5
+Visting 5,6
+Visting 5,7
+Visting 5,8
+Nobody around me <m,2> @ 3,6
+    0  1  2  3  4  5  6  7  8  9 
+ 0  _  _  _  _  C  _  _  _  _  _ 
+ 1  _  _  #  #  _  _  _  C  _  _ 
+ 2  _  m  _  _  _  _  _  _  _  _ 
+ 3  _  #  #  _  _  _  m  _  _  _ 
+ 4  _  _  _  _  _  _  _  _  _  _ 
+ 5  _  _  _  _  _  _  _  m  _  _ 
+ 6  _  f  _  _  _  _  _  _  _  _ 
+ 7  C  _  _  _  _  _  f  _  _  _ 
+ 8  _  _  _  _  C  _  f  _  _  _ 
+ 9  _  _  _  _  _  _  _  _  _  _ 
+Running agent <m,2> @ 2 cycles
+
+

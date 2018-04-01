@@ -29,28 +29,31 @@ void Agent::init_position(int x, int y) {
 }
 
 void Agent::run() {
-  // printf("<%c,%d> Running\n", my_id.sex, my_id.name);
+  Agent* neighbor = NULL;
+
   switch (ps) {
     case INIT:
       // Init procedures ?
       ps = WANDER_S;
     break;
     case WANDER_S:
-      Agent* neighbor;
+      step();
       neighbor = env->get_nearst_agent(my_position,get_opposed_sex());
       if ( neighbor != NULL) {
         // Found someone cool
+        printf("Found agent around me <%c,%d> @ %d,%d\n", get_id().sex,
+                get_id().name, my_position.x, my_position.y);
         if (neighbor->marry_me(my_id) == 1) {
           // It said YES :)
-          // Talvez direto para o registry
-          // ps = PROPOSE_S;
+          printf("<%c,%d> said yes to <%c,%d>\n", neighbor->get_id().sex,
+                  neighbor->get_id().name, get_id().sex, get_id().name);
           ps = TO_REGISTRY;
         }
       } else {
         ps = WANDER_S;
+        printf("Nobody around me <%c,%d> @ %d,%d\n", get_id().sex, get_id().name,
+                my_position.x, my_position.y);
       }
-
-      step();
     break;
     case PROPOSE_S:
       // ?
@@ -126,7 +129,7 @@ void Agent::step() {
         } else {
           // Matrix bound
           temp_x = 0;
-          temp_y = my_position.y;
+          temp_y = my_position.y+1;
         }
         break;
       case 1:
@@ -136,7 +139,7 @@ void Agent::step() {
           temp_y = my_position.y+1;
         } else {
           // Matrix bound
-          temp_x = my_position.x;
+          temp_x = my_position.x+1;
           temp_y = 0;
         }
         break;
@@ -147,8 +150,8 @@ void Agent::step() {
           temp_y = my_position.y+1;
         } else {
           // Matrix bound
-          temp_x = my_position.x;
-          temp_y = 0;
+          temp_x = my_position.x+1;
+          temp_y = my_position.y+1;
         }
         break;
     }

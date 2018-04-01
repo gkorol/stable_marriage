@@ -7,7 +7,7 @@ class Agent;
 #define MAX_IT 10
 
 // Grid size
-#define N 20
+#define N 10
 
 // Total number of registries
 #define REG_TOTAL 4

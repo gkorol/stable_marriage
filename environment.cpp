@@ -40,10 +40,13 @@ void Environment::print_cell(int x, int y) {
     printf(" _ ");
   } else if (grid[x][y].registry > 0) {
     printf("\e[34m C \e[0m");
+    // printf(" C ");
   } else if (grid[x][y].wall == 1) {
     printf("\e[91m # \e[0m");
+    // printf(" # ");
   } else if (grid[x][y].agent != NULL) {
     printf("\e[92m %c \e[0m", grid[x][y].agent->get_id().sex);
+    // printf(" %c ", grid[x][y].agent->get_id().sex);
   }
 }
 
@@ -104,12 +107,14 @@ Agent* Environment::get_nearst_agent(pos p, char s) {
   int x = p.x;
   int y = p.y;
 
+  printf("Looking for %c\n", s);
   for (int i=x-2;i<x+3;i++) {
-    for (int j=y-2;j<y-1;j++) {
-      if ( i >= 0 && i <= N && j >= 0 && j <= N) {
+    for (int j=y-2;j<y+3;j++) {
+      if ( i >= 0 && i < N && j >= 0 && j < N) {
+        printf("Visting %d,%d\n", i,j);
         if (grid[i][j].agent != NULL && i != p.x && j != p.y)
           if (grid[i][j].agent->get_id().sex == s)
-            // Returns the first agent of a different sex
+            // Returns the first agent of sex s
             return grid[i][j].agent;
       }
     }
