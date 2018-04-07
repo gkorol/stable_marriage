@@ -40,27 +40,32 @@ void Agent::run() {
     case WANDER_S:
       step();
       neighbor = env->get_nearst_agent(my_position,get_opposed_sex());
-      if ( neighbor != NULL) {
-        // Found someone cool
-        printf("Found agent around me <%c,%d> @ %d,%d\n", get_id().sex,
-                get_id().name, my_position.x, my_position.y);
-        if (neighbor->marry_me(my_id) == 1) {
-          reg.x = 0; reg.y = 0;
-          // It said YES :)
-          printf("<%c,%d> said yes to <%c,%d>\n", neighbor->get_id().sex,
-                  neighbor->get_id().name, get_id().sex, get_id().name);
-          status = MARRIED;
-          partner = neighbor;
-          ps = TO_REGISTRY;
-        } else {
-          printf("<%c,%d> was not interested in <%c,%d>\n", neighbor->get_id().sex,
-                  neighbor->get_id().name, get_id().sex, get_id().name);
-          ps = WANDER_S;
-        }
+      if (status == MARRIED) {
+        // Said yes to someone
+        ps = TO_REGISTRY;
       } else {
-        ps = WANDER_S;
-        printf("Nobody around me <%c,%d> @ %d,%d\n", get_id().sex, get_id().name,
-                my_position.x, my_position.y);
+        if ( neighbor != NULL) {
+          // Found someone cool
+          printf("Found agent around me <%c,%d> @ %d,%d\n", get_id().sex,
+                  get_id().name, my_position.x, my_position.y);
+          if (neighbor->marry_me(this) == 1) {
+            reg.x = 0; reg.y = 0;
+            // It said YES :)
+            printf("<%c,%d> said yes to <%c,%d>\n", neighbor->get_id().sex,
+                    neighbor->get_id().name, get_id().sex, get_id().name);
+            status = MARRIED;
+            partner = neighbor;
+            ps = TO_REGISTRY;
+          } else {
+            printf("<%c,%d> was not interested in <%c,%d>\n", neighbor->get_id().sex,
+                    neighbor->get_id().name, get_id().sex, get_id().name);
+            ps = WANDER_S;
+          }
+        } else {
+          ps = WANDER_S;
+          printf("Nobody around me <%c,%d> @ %d,%d\n", get_id().sex, get_id().name,
+                  my_position.x, my_position.y);
+        }
       }
       break;
     case PROPOSE_S:
@@ -68,7 +73,7 @@ void Agent::run() {
     break;
     case TO_REGISTRY:
       reg = env->get_nearst_registry(my_position);
-      printf("Going to registry at %d,%d <%c,%d>\n", reg.x, reg.y, get_id().sex, get_id().name);
+      printf("Path to registry at %d,%d <%c,%d>\n", reg.x, reg.y, get_id().sex, get_id().name);
       // env->get_path_to_reg(my_position, reg, path);
       // if (!path.empty())
         ps = ROUTE_TO_REG;
@@ -90,32 +95,31 @@ void Agent::run() {
       break;
     case MARRY:
       // Both update positions to same location, and walk together
-      // Meaning the female agent leads the walk
       printf("Getting married <%c,%d> @ %d,%d\n", get_id().sex,
             get_id().name, my_position.x, my_position.y);
 
-      // Married agents go on capslock
       status = MARRIED;
-      my_id.sex -= 32;
-      if( my_id.sex == MALE) {
-        env->update_position(this, partner->get_position().x, partner->get_position().y);
+      if( my_id.sex == FEMALE) {
+        env->update_position_partner(this, partner->get_position().x, partner->get_position().y);
         env->clean_position(my_position.x, my_position.y);
-        env->couple_position(partner->get_position().x, partner->get_position().y);
-      } else {
-        env->couple_position(my_position.x, my_position.y);
       }
+
       ps = WANDER_M;
       break;
     case DIVORCE:
       printf("Getting divorce <%c,%d> @ %d,%d\n", get_id().sex,
             get_id().name, my_position.x, my_position.y);
-      my_id.sex += 32;
       ps = WANDER_S;
       break;
     case WANDER_M:
       printf("Married wandering <%c,%d> @ %d,%d\n", get_id().sex,
             get_id().name, my_position.x, my_position.y);
-      ps = DIVORCE;
+      if( my_id.sex == MALE) {
+        step();
+      } else {
+        env->update_position_partner(this, partner->get_position().x, partner->get_position().y);
+      }
+      // ps = DIVORCE;
       break;
     case PROPOSE_M:
       break;
@@ -130,9 +134,10 @@ char Agent::get_status(){
   return status;
 }
 
-int Agent::marry_me(id proposer) {
+int Agent::marry_me(Agent* proposer) {
   if(status == SINGLE) {
     // Will accept any proposal if single
+    partner = proposer;
     status = MARRIED;
     return 1;
   }
@@ -214,7 +219,7 @@ void Agent::step() {
 }
 
 int Agent::propose(Agent* proposed) {
-  proposed->marry_me(my_id);
+  proposed->marry_me(this);
 }
 
 pos Agent::get_position() {

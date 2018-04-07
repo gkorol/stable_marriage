@@ -26,7 +26,7 @@ public:
 	void init_position(int x, int y);
 	void step();
 	pos get_position();
-  int marry_me(id proposer);  // Gets asked by other agents
+  int marry_me(Agent* proposer);  // Gets asked by other agents
 
 private:
   int propose(Agent* proposed);   // Asks another agent
