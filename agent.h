@@ -34,11 +34,11 @@ private:
   ag_states ps;							// Present state
   id my_id;
 	pos my_position;
-  id partner;               // id of partner if married
+  Agent* partner;           // id of partner if married
+	pos reg;									// Registry
   char status;              // SINGLE OR MARRIED
   vector<int> preferences;  // Vector of preferences
   Environment* env;         // Pointer to environment object
-  char engaged;             // Signal for next cycle that proposal was accepted
 	vector<pos> path;					// Vector of positions that lead to the registry
 	int walking_pattern;			// Keeps track of the walking pattern through cycles
 };

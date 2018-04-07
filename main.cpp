@@ -76,13 +76,13 @@ int main(int argc, char** argv) {
   for( int t=0; t<MAX_IT; t++) {
     cout << "cycle: " << t << endl;
     for( int i=0; i<(couples*2); i++) {
-      std::system("clear");
+      // std::system("clear");
       env->get_agent( i )->run();
       print_grid(env);
       cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
       <<"> @ "<< t << " cycles" << endl << endl << endl;
-      if (t>0)
-        sleep(1);
+      // if (t>0)
+      //   sleep(1);
     }
   }
 

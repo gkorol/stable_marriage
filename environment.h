@@ -44,6 +44,7 @@ public:
   void add_walls();
   void add_registries(int number);
   void add_agent(Agent* a);
+  int is_agent_here(Agent* a, int x, int y);
   Agent* get_agent(int i);
 
 private:

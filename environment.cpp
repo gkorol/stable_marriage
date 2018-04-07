@@ -134,7 +134,7 @@ pos Environment::get_nearst_registry(pos p) {
   for (int i=0; i<registries.size(); i++) {
     temp_dist = sqrt( pow( ((float)p.x-(float)registries.at(i).x),2.0) + pow( ((float)p.y-(float)registries.at(i).y),2.0) );
     // printf("Registry #%d @ %d,%d is %f cells from %d,%d\n", i, registries.at(i).x,
-        registries.at(i).y, temp_dist, p.x, p.y);
+        // registries.at(i).y, temp_dist, p.x, p.y);
     if (temp_dist < shorter_dist) {
       shorter_dist = temp_dist;
       closest_pos.x = registries.at(i).x;
@@ -157,6 +157,23 @@ void Environment::update_position(Agent* a, int new_x, int new_y) {
 
   grid[new_x][new_y].free = INF;
   grid[new_x][new_y].agent = a;
+}
+
+int Environment::is_agent_here(Agent* a, int x, int y) {
+  //ENQUANTO A-STAR NAO ESTA PRONTO
+  return 1;
+  
+  for (int i=x-1;i<x+2;i++) {
+    for (int j=y-1;j<y+2;j++) {
+      if ( i >= 0 && i < N && j >= 0 && j < N) {
+        printf("Looking for <%c,%d> at %d,%d around %d,%d\n",
+                a->get_id().sex, a->get_id().name, i, j, x, y);
+        if( grid[i][j].agent == a)
+          return 1;
+        }
+    }
+  }
+  return 0;
 }
 
 void Environment::get_path_to_reg(pos start, pos target, vector<pos> &p) {

@@ -45,10 +45,12 @@ void Agent::run() {
         printf("Found agent around me <%c,%d> @ %d,%d\n", get_id().sex,
                 get_id().name, my_position.x, my_position.y);
         if (neighbor->marry_me(my_id) == 1) {
+          reg.x = 0; reg.y = 0;
           // It said YES :)
           printf("<%c,%d> said yes to <%c,%d>\n", neighbor->get_id().sex,
                   neighbor->get_id().name, get_id().sex, get_id().name);
           status = MARRIED;
+          partner = neighbor;
           ps = TO_REGISTRY;
         } else {
           printf("<%c,%d> was not interested in <%c,%d>\n", neighbor->get_id().sex,
@@ -65,7 +67,6 @@ void Agent::run() {
       // ?
     break;
     case TO_REGISTRY:
-      pos reg;
       reg = env->get_nearst_registry(my_position);
       printf("Going to registry at %d,%d <%c,%d>\n", reg.x, reg.y, get_id().sex, get_id().name);
       // env->get_path_to_reg(my_position, reg, path);
@@ -75,14 +76,17 @@ void Agent::run() {
         // cout << "ERROR GETTING PATH TO REGISTRY!" << endl;
       break;
     case ROUTE_TO_REG:
-      printf("Going to registry <%c,%d> @ %d,%d\n", get_id().sex,
-            get_id().name, my_position.x, my_position.y);
+      printf("En route to registry %d,%d <%c,%d>\n",
+              reg.x, reg.y, get_id().sex, get_id().name);
       ps = WAIT_FIANCE;
       break;
     case WAIT_FIANCE:
       printf("Waiting for my fiance <%c,%d> @ %d,%d\n", get_id().sex,
             get_id().name, my_position.x, my_position.y);
-      ps = MARRY;
+      if (env->is_agent_here(partner,reg.x, reg.y))
+        ps = MARRY;
+      else
+        ps = WAIT_FIANCE;
       break;
     case MARRY:
       printf("Getting married <%c,%d> @ %d,%d\n", get_id().sex,
