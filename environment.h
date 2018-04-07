@@ -39,6 +39,8 @@ public:
   void get_path_to_reg(pos start, pos target, vector<pos> &p);   // Return (?) path to position p
   int free_poisition(int x, int y);                  // Return wether the position is free of obstacles
   void update_position(Agent* a, int new_x, int new_y);
+  void couple_position(int x, int y);
+  void clean_position(int x, int y);
   cell (*get_grid(void))[N][N];
   void print_cell(int x, int y);
   void add_walls();

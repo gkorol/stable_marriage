@@ -20,6 +20,7 @@ public:
 	~Agent();
   void run();   // Run the FSM
   id get_id();
+	char get_status();
 	void print_prefs();
   int init_prefs(vector<int> p);
 	void init_position(int x, int y);

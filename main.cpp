@@ -79,8 +79,9 @@ int main(int argc, char** argv) {
       // std::system("clear");
       env->get_agent( i )->run();
       print_grid(env);
-      cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
-      <<"> @ "<< t << " cycles" << endl << endl << endl;
+      // cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
+      // <<"> @ "<< t << " cycles" << endl << endl << endl;
+      cout << endl << endl;
       // if (t>0)
       //   sleep(1);
     }

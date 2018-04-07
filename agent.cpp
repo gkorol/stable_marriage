@@ -89,13 +89,27 @@ void Agent::run() {
         ps = WAIT_FIANCE;
       break;
     case MARRY:
+      // Both update positions to same location, and walk together
+      // Meaning the female agent leads the walk
       printf("Getting married <%c,%d> @ %d,%d\n", get_id().sex,
             get_id().name, my_position.x, my_position.y);
+
+      // Married agents go on capslock
+      status = MARRIED;
+      my_id.sex -= 32;
+      if( my_id.sex == MALE) {
+        env->update_position(this, partner->get_position().x, partner->get_position().y);
+        env->clean_position(my_position.x, my_position.y);
+        env->couple_position(partner->get_position().x, partner->get_position().y);
+      } else {
+        env->couple_position(my_position.x, my_position.y);
+      }
       ps = WANDER_M;
       break;
     case DIVORCE:
       printf("Getting divorce <%c,%d> @ %d,%d\n", get_id().sex,
             get_id().name, my_position.x, my_position.y);
+      my_id.sex += 32;
       ps = WANDER_S;
       break;
     case WANDER_M:
@@ -110,6 +124,10 @@ void Agent::run() {
 
 id Agent::get_id() {
   return my_id;
+}
+
+char Agent::get_status(){
+  return status;
 }
 
 int Agent::marry_me(id proposer) {

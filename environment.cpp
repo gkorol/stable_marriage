@@ -23,6 +23,7 @@ Environment::Environment() {
       grid[i][j].wall = 0;
       grid[i][j].registry = 0;
       grid[i][j].agent = NULL;
+      grid[i][j].couple = 0;
     }
   }
 }
@@ -39,14 +40,16 @@ void Environment::print_cell(int x, int y) {
   if(grid[x][y].free == 1){
     printf(" _ ");
   } else if (grid[x][y].registry > 0) {
-    printf("\e[34m C \e[0m");
-    // printf(" C ");
+    // printf("\e[34m C \e[0m");
+    printf(" C ");
   } else if (grid[x][y].wall == 1) {
-    printf("\e[91m # \e[0m");
-    // printf(" # ");
+    // printf("\e[91m # \e[0m");
+    printf(" # ");
+  } else if (grid[x][y].couple == 1) {
+    printf(" %% ");
   } else if (grid[x][y].agent != NULL) {
-    printf("\e[92m %c \e[0m", grid[x][y].agent->get_id().sex);
-    // printf(" %c ", grid[x][y].agent->get_id().sex);
+    // printf("\e[92m %c \e[0m", grid[x][y].agent->get_id().sex);
+    printf(" %c ", grid[x][y].agent->get_id().sex);
   }
 }
 
@@ -153,16 +156,31 @@ void Environment::update_position(Agent* a, int new_x, int new_y) {
   const float INF = std::numeric_limits<float>::infinity();
 
   grid[a->get_position().x][a->get_position().y].free = 1;
+  grid[a->get_position().x][a->get_position().y].couple = 0;
   grid[a->get_position().x][a->get_position().y].agent = NULL;
 
   grid[new_x][new_y].free = INF;
   grid[new_x][new_y].agent = a;
+
+  if( a->get_status() )
+    grid[new_x][new_y].couple = 1;
+  else
+    grid[new_x][new_y].couple = 0;
+}
+
+void Environment::couple_position(int x, int y) {
+  grid[x][y].couple = 1;
+}
+
+void Environment::clean_position(int x, int y) {
+  grid[x][y].free = 1;
+  grid[x][y].agent = NULL;
 }
 
 int Environment::is_agent_here(Agent* a, int x, int y) {
-  //ENQUANTO A-STAR NAO ESTA PRONTO
-  return 1;
-  
+
+  return 1; //ENQUANTO A-STAR NAO ESTA PRONTO
+
   for (int i=x-1;i<x+2;i++) {
     for (int j=y-1;j<y+2;j++) {
       if ( i >= 0 && i < N && j >= 0 && j < N) {
