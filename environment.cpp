@@ -77,17 +77,24 @@ void Environment::add_walls() {
     for( int j=0; j<size; j++){
       grid[x][y+j].free = INF;
       grid[x][y+j].wall = 1;
+      pos p;
+      p.x = x;
+      p.y = y;
+      walls.push_back(p);
     }
   }
 }
 
 void Environment::add_registries(int number) {
   const float INF = std::numeric_limits<float>::infinity();
-
-  for( int i=0; i<number; i++) {
+  // Registries should be close to walls
+  for(int i=0; i<number; i++) {
     for(;;){
       int x = rand() % (N-1);
       int y = rand() % (N-1);
+
+      //printf("Values of X and Y of registries: %d %d\n", x, y);
+
       if (grid[x][y].free == 1) {
         grid[x][y].free = INF;
         grid[x][y].registry = i+1;
@@ -139,7 +146,7 @@ Agent* Environment::get_nearst_agent(pos p, char s) {
   return NULL;
 }
 
-pos Environment::get_nearst_registry(pos p) {
+pos Environment::get_nearest_registry(pos p) {
   // Uses heuristic to return "the closest" registry
   float shorter_dist = N*N; // Big number
   float temp_dist = 0.0;
@@ -159,7 +166,7 @@ pos Environment::get_nearst_registry(pos p) {
   return closest_pos;
 }
 
-int Environment::free_poisition(int x, int y) {
+int Environment::free_position(int x, int y) {
   return grid[x][y].free;
 }
 
@@ -220,10 +227,10 @@ void Environment::get_path_to_reg(pos start, pos target, vector<pos> &p) {
 }
 
 float Environment::h(int x1, int y1, int x2, int y2) {
-  return sqrt( pow( (x1-x2),2) + pow( (y1-y2),2) );
+  return sqrt( pow( (x2-x1),2) + pow( (y2-y1),2) );
 }
 
-void Environment::astar(cell matrix[][N], pos start, pos goal, vector<pos> &path) {
+void Environment::astar(cell matrix[N][N], pos start, pos goal, vector<pos> &path) {
 
   const float INF = std::numeric_limits<float>::infinity();
 
@@ -258,9 +265,9 @@ void Environment::astar(cell matrix[][N], pos start, pos goal, vector<pos> &path
 
     nodes_to_visit.pop();
 
-    // check for free cells, bounds and walls arouond
-    if (cur.x-1 >= 0 && cur.x-1 < N && cur.y-1 >= 0 && cur.y-1 < N &&
-      matrix[cur.x-1][cur.y-1].free == 1) {
+    // Check neighbors for free cells, bounds and walls
+    // The order of check is top to bottom, left to right
+    if (cur.x-1 >= 0 && cur.x-1 < N && cur.y-1 >= 0 && cur.y-1 < N &&  matrix[cur.x-1][cur.y-1].free == 1) {
         nbrs[0] = 1;
         nbrs_x[0] = cur.x-1;
         nbrs_y[0] = cur.y-1;
@@ -270,19 +277,17 @@ void Environment::astar(cell matrix[][N], pos start, pos goal, vector<pos> &path
         nbrs_y[0] = -1;
       }
 
-    if (cur.x-1 >= 0 && cur.x-1 < N && cur.y   >= 0 && cur.y   < N &&
-      matrix[cur.x-1][cur.y].free == 1) {
+    if (cur.x >= 0 && cur.x < N && cur.y-1 >= 0 && cur.y-1 < N &&  matrix[cur.x][cur.y-1].free == 1) {
         nbrs[1] = 1;
-        nbrs_x[1] = cur.x-1;
-        nbrs_y[1] = cur.y;
+        nbrs_x[1] = cur.x;
+        nbrs_y[1] = cur.y-1;
       } else {
         nbrs[1] = -1;
         nbrs_x[1] = -1;
         nbrs_y[1] = -1;
       }
 
-    if (cur.x+1 >= 0 && cur.x+1 < N && cur.y-1 >= 0 && cur.y-1 < N &&
-      matrix[cur.x+1][cur.y-1].free == 1) {
+    if (cur.x+1 >= 0 && cur.x+1 < N && cur.y-1 >= 0 && cur.y-1 < N && matrix[cur.x+1][cur.y-1].free == 1) {
         nbrs[2] = 1;
         nbrs_x[2] = cur.x+1;
         nbrs_y[2] = cur.y-1;
@@ -292,8 +297,7 @@ void Environment::astar(cell matrix[][N], pos start, pos goal, vector<pos> &path
         nbrs_y[2] = -1;
       }
 
-    if (cur.x-1 >= 0 && cur.x-1 < N && cur.y >= 0 && cur.y < N &&
-      matrix[cur.x-1][cur.y].free == 1) {
+    if (cur.x-1 >= 0 && cur.x-1 < N && cur.y >= 0 && cur.y < N &&  matrix[cur.x-1][cur.y].free == 1) {
         nbrs[3] = 1;
         nbrs_x[3] = cur.x-1;
         nbrs_y[3] = cur.y;
@@ -303,8 +307,7 @@ void Environment::astar(cell matrix[][N], pos start, pos goal, vector<pos> &path
         nbrs_y[3] = -1;
       }
 
-    if (cur.x+1 >= 0 && cur.x+1 < N && cur.y >= 0 && cur.y < N &&
-      matrix[cur.x+1][cur.y].free == 1) {
+    if (cur.x+1 >= 0 && cur.x+1 < N && cur.y >= 0 && cur.y < N && matrix[cur.x+1][cur.y].free == 1) {
         nbrs[4] = 1;
         nbrs_x[4] = cur.x+1;
         nbrs_y[4] = cur.y;
@@ -314,8 +317,7 @@ void Environment::astar(cell matrix[][N], pos start, pos goal, vector<pos> &path
         nbrs_y[4] = -1;
       }
 
-    if (cur.x-1 >= 0 && cur.x-1 < N && cur.y+1 >= 0 && cur.y+1 < N &&
-      matrix[cur.x-1][cur.y+1].free == 1) {
+    if (cur.x-1 >= 0 && cur.x-1 < N && cur.y+1 >= 0 && cur.y+1 < N && matrix[cur.x-1][cur.y+1].free == 1) {
         nbrs[5] = 1;
         nbrs_x[5] = cur.x-1;
         nbrs_y[5] = cur.y+1;
@@ -325,8 +327,7 @@ void Environment::astar(cell matrix[][N], pos start, pos goal, vector<pos> &path
         nbrs_y[5] = -1;
       }
 
-    if (cur.x >= 0 && cur.x < N && cur.y+1 >= 0 && cur.y+1 < N &&
-      matrix[cur.x][cur.y+1].free == 1) {
+    if (cur.x >= 0 && cur.x < N && cur.y+1 >= 0 && cur.y+1 < N && matrix[cur.x][cur.y+1].free == 1) {
         nbrs[6] = 1;
         nbrs_x[6] = cur.x;
         nbrs_y[6] = cur.y+1;
@@ -336,10 +337,9 @@ void Environment::astar(cell matrix[][N], pos start, pos goal, vector<pos> &path
         nbrs_y[6] = -1;
       }
 
-    if (cur.x+1 >= 0 && cur.x+1 < N && cur.y+1 >= 0 && cur.y+1 < N &&
-      matrix[cur.x+1][cur.y+1].free == 1) {
+    if (cur.x+1 >= 0 && cur.x+1 < N && cur.y+1 >= 0 && cur.y+1 < N && matrix[cur.x+1][cur.y+1].free == 1) {
         nbrs[7] = 1;
-        nbrs_x[7] = cur.x-1;
+        nbrs_x[7] = cur.x+1;
         nbrs_y[7] = cur.y+1;
       } else {
         nbrs[7] = -1;
@@ -350,12 +350,13 @@ void Environment::astar(cell matrix[][N], pos start, pos goal, vector<pos> &path
     float heuristic_cost;
     for (int i = 0; i < 8; ++i) {
       if (nbrs[i] >= 0) {
-        // Given the cost of 1 for each move
+        // Give the cost of 1 for each move - (g(n))
         float new_cost = costs[cur.x][cur.y] + 1;
+
         if (new_cost < costs[nbrs_x[i]][nbrs_y[i]]) {
             heuristic_cost = h(nbrs_x[i],nbrs_y[i],goal.x,goal.y);
 
-          // paths with lower expected cost are explored first
+          // paths with lower expected cost are explored first - f(n) = g(n) + h(n)
           float priority = new_cost + heuristic_cost;
           nodes_to_visit.push(Node(nbrs_x[i], nbrs_y[i], priority));
 

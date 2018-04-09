@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
         while (iss >> number)
           pref.push_back(number);
 
-        Agent* m = new Agent('m',line_c,env);
+        Agent* m = new Agent(MALE,line_c,env);
         m->init_prefs(pref);
         env->add_agent(m);
         // m->print_prefs();
@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
         while (iss >> number)
           pref.push_back(number);
 
-        Agent* f = new Agent('f',line_c-3,env);
+        Agent* f = new Agent(FEMALE,line_c-3,env);
         f->init_prefs(pref);
         env->add_agent(f);
         // f->print_prefs();
@@ -76,6 +76,7 @@ int main(int argc, char** argv) {
   for( int t=0; t<MAX_IT; t++) {
     cout << "cycle: " << t << endl;
     for( int i=0; i<(couples*2); i++) {
+      //sleep(5); //For debug
       std::system("clear");
       print_grid(env);
       env->get_agent( i )->run();
