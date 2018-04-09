@@ -72,7 +72,7 @@ void Agent::run() {
       // ?
     break;
     case TO_REGISTRY:
-      reg = env->get_nearst_registry(my_position);
+      reg = env->get_nearest_registry(my_position);
       printf("Path to registry at %d,%d <%c,%d>\n", reg.x, reg.y, get_id().sex, get_id().name);
       // env->get_path_to_reg(my_position, reg, path);
       // if (!path.empty())
@@ -206,7 +206,7 @@ void Agent::step() {
         }
         break;
     }
-    if (env->free_poisition(temp_x,temp_y) == 1){
+    if (env->free_position(temp_x,temp_y) == 1){
       env->update_position(this, temp_x, temp_y);
       my_position.x = temp_x;
       my_position.y = temp_y;

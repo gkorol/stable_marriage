@@ -35,9 +35,9 @@ public:
   ~Environment();
 
   Agent* get_nearst_agent(pos p, char s);            // Locate nearst agent of sex s
-  pos get_nearst_registry(pos p);                    // Return position of the closest registry
+  pos get_nearest_registry(pos p);                    // Return position of the closest registry
   void get_path_to_reg(pos start, pos target, vector<pos> &p);   // Return (?) path to position p
-  int free_poisition(int x, int y);                  // Return wether the position is free of obstacles
+  int free_position(int x, int y);                  // Return wether the position is free of obstacles
   void update_position(Agent* a, int new_x, int new_y);
   void update_position_partner(Agent* a, int new_x, int new_y);
   void set_couple(int x, int y);
@@ -56,6 +56,7 @@ private:
   // pos  registries[REG_TOTAL];   // Array of registries. Positions here must be
                                 // the same in the matrix
   vector<pos> registries;
+  vector<pos> walls;
   vector<Agent*> active_ags;     // Vector of active agents
   void astar(cell matrix[][N], pos start, pos goal, vector<pos> &path);
   float h(int x1, int y1, int x2, int y2);
