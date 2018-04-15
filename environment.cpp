@@ -56,13 +56,43 @@ void Environment::print_cell(int x, int y) {
 }
 
 void Environment::print_agents() {
+  int part;
   for(int i=0; i<active_ags.size(); i++) {
-    printf("Agent <%c,%d> @ %2d,%2d: status = %d\n",
-      active_ags.at(i)->get_id().sex, active_ags.at(i)->get_id().name,
-      active_ags.at(i)->get_position().x, active_ags.at(i)->get_position().y,
-      active_ags.at(i)->get_status());
+    if (active_ags[i]->get_partner() != NULL)
+      part = active_ags[i]->get_partner()->get_id().name;
+    else
+      part = -1;
+    printf("Agent <%c,%d> @ %2d,%2d | status = %d | prefs: %d > %d > %d | partner: %d\n",
+      active_ags[i]->get_id().sex, active_ags[i]->get_id().name,
+      active_ags[i]->get_position().x, active_ags[i]->get_position().y,
+      active_ags[i]->get_status(),
+      active_ags[i]->get_pref_at(0),
+      active_ags[i]->get_pref_at(1),
+      active_ags[i]->get_pref_at(2),
+      part);
   }
 }
+
+int Environment::who_is_happy() {
+  int total = 0;
+  for (int i=0;i<active_ags.size(); i++) {
+    if (active_ags[i]->get_partner() != NULL) {
+      if (active_ags[i]->get_pref_at(0) == active_ags[i]->get_partner()->get_id().name) {
+        total ++;
+        printf("Agent <%c,%d> is happy with <%c,%d>.\n",
+                  active_ags[i]->get_id().sex, active_ags[i]->get_id().name,
+                  active_ags[i]->get_partner()->get_id().sex, active_ags[i]->get_partner()->get_id().name);
+      }
+    }
+  }
+  printf("Total of happy couples %d\n", total);
+  return total;
+}
+
+// int Environment::finished() {
+//   for (int i=0;i<active_ags.size(); i++) {
+//   }
+// }
 
 void Environment::add_walls() {
   const float INF = std::numeric_limits<float>::infinity();
@@ -167,20 +197,27 @@ pos Environment::get_nearest_registry(pos p) {
 }
 
 int Environment::free_position(int x, int y) {
-  return grid[x][y].free;
+  const float INF = std::numeric_limits<float>::infinity();
+
+  if (x > 0 && x < N && y > 0 && y < N)
+    return grid[x][y].free;
+  else
+    return INF;
 }
 
 void Environment::update_position(Agent* a, int new_x, int new_y) {
   const float INF = std::numeric_limits<float>::infinity();
 
+  grid[a->get_position().x][a->get_position().y].agent = NULL;
   grid[a->get_position().x][a->get_position().y].free = 1;
   grid[a->get_position().x][a->get_position().y].couple = 0;
-  grid[a->get_position().x][a->get_position().y].agent = NULL;
+
+  if( a->get_status() == MARRIED) {
+    grid[new_x][new_y].couple = 1;
+  }
 
   grid[new_x][new_y].free = INF;
   grid[new_x][new_y].agent = a;
-  if( a->get_status() == MARRIED)
-    grid[new_x][new_y].couple = 1;
 }
 
 void Environment::update_position_partner(Agent* a, int new_x, int new_y) {
@@ -198,6 +235,11 @@ void Environment::update_position_partner(Agent* a, int new_x, int new_y) {
 void Environment::clean_position(int x, int y) {
   grid[x][y].free = 1;
   grid[x][y].agent = NULL;
+}
+
+void Environment::clean_position_partner(int x, int y){
+  grid[x][y].agent_partner = NULL;
+  grid[x][y].couple = 0;
 }
 
 void Environment::set_couple(int x, int y) {

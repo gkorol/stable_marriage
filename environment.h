@@ -42,9 +42,12 @@ public:
   void update_position_partner(Agent* a, int new_x, int new_y);
   void set_couple(int x, int y);
   void clean_position(int x, int y);
+  void clean_position_partner(int x, int y);
   cell (*get_grid(void))[N][N];
   void print_cell(int x, int y);
   void print_agents();
+  int  who_is_happy();
+  // int  finished();
   void add_walls();
   void add_registries(int number);
   void add_agent(Agent* a);

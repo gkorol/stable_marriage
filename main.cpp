@@ -70,24 +70,23 @@ int main(int argc, char** argv) {
     myfile.close();
   }
 
-  // print_grid(env);
-
   // Main loop
   for( int t=0; t<MAX_IT; t++) {
-    cout << "cycle: " << t << endl;
     for( int i=0; i<(couples*2); i++) {
-      //sleep(5); //For debug
-      std::system("clear");
-      print_grid(env);
+      // std::system("clear");
       env->get_agent( i )->run();
-      cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
-      <<"> @ "<< t << " cycles" << endl;
-      env->print_agents();
+      // cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
+      // <<"> @ "<< t << " cycles" << endl;
+      cout << "Cycle = " << t << endl;
+      print_grid(env);
+      if (t>0) {
+        env->print_agents();
+        // sleep(1);
+      }
       cout << endl << endl;
-      if (t>0)
-        sleep(1);
     }
   }
+  env->who_is_happy();
 
   return 0;
 }

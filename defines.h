@@ -4,10 +4,10 @@
 class Agent;
 
 // Maximum number of iterations
-#define MAX_IT 30
+#define MAX_IT 300
 
 // Grid size
-#define N 15
+#define N 11
 
 // Total number of registries
 // #define REG_TOTAL 4
@@ -21,8 +21,8 @@ class Agent;
 #define FEMALE 'f'
 
 // Agent states
-enum ag_states {INIT, WANDER_S, PROPOSE_S, TO_REGISTRY, ROUTE_TO_REG,
-                WAIT_FIANCE, MARRY, DIVORCE, WANDER_M, PROPOSE_M};
+enum ag_states {INIT, WANDER_S, TO_REGISTRY, ROUTE_TO_REG,
+                WAIT_FIANCE, MARRY, DIVORCE, WANDER_M};
 
 // agent ID
 struct id{
