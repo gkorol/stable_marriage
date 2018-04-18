@@ -47,7 +47,7 @@ public:
   void print_cell(int x, int y);
   void print_agents();
   int  who_is_happy();
-  // int  finished();
+  int  finished();
   void add_walls();
   void add_registries(int number);
   void add_agent(Agent* a);

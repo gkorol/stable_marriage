@@ -62,14 +62,15 @@ void Environment::print_agents() {
       part = active_ags[i]->get_partner()->get_id().name;
     else
       part = -1;
-    printf("Agent <%c,%d> @ %2d,%2d | status = %d | prefs: %d > %d > %d | partner: %d\n",
+    printf("Agent <%c,%d> @ %2d,%2d | status = %d | prefs: %d > %d > %d | partner: %d | state: %d\n",
       active_ags[i]->get_id().sex, active_ags[i]->get_id().name,
       active_ags[i]->get_position().x, active_ags[i]->get_position().y,
       active_ags[i]->get_status(),
       active_ags[i]->get_pref_at(0),
       active_ags[i]->get_pref_at(1),
       active_ags[i]->get_pref_at(2),
-      part);
+      part,
+      active_ags[i]->get_state());
   }
 }
 
@@ -89,10 +90,18 @@ int Environment::who_is_happy() {
   return total;
 }
 
-// int Environment::finished() {
-//   for (int i=0;i<active_ags.size(); i++) {
-//   }
-// }
+int Environment::finished() {
+   int total = 0;
+   for (int i=0;i<active_ags.size(); i++) {
+	if (active_ags[i]->get_state() == WANDER_M)
+		total++;
+   }
+   if (total == active_ags.size() && who_is_happy() == active_ags.size()){
+	return 1;
+   } else {
+	return 0;
+   }
+}
 
 void Environment::add_walls() {
   const float INF = std::numeric_limits<float>::infinity();

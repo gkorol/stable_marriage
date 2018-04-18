@@ -10,7 +10,7 @@
 void print_grid(Environment* e);
 
 int main(int argc, char** argv) {
-  int couples, regs;
+  int couples, regs, t = 0;
   vector<Agent> males;
   vector<Agent> females;
 
@@ -71,23 +71,29 @@ int main(int argc, char** argv) {
   }
 
   // Main loop
-  for( int t=0; t<MAX_IT; t++) {
+  for( t=0; t<MAX_IT; t++) {
     for( int i=0; i<(couples*2); i++) {
       // std::system("clear");
       env->get_agent( i )->run();
       // cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
       // <<"> @ "<< t << " cycles" << endl;
-      cout << "Cycle = " << t << endl;
-      print_grid(env);
-      if (t>0) {
-        env->print_agents();
+      //cout << "Cycle = " << t << endl;
+      //print_grid(env);
+      //if (t>0) {
+      //  env->print_agents();
         // sleep(1);
-      }
-      cout << endl << endl;
+      //}
+      //cout << endl << endl;
+    }
+    if (env->finished()){
+	break;
     }
   }
+  print_grid(env);
+  env->print_agents();
+  cout << endl;
   env->who_is_happy();
-
+  cout << "Total cycles = " << t << endl;
   return 0;
 }
 

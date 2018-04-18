@@ -103,27 +103,42 @@ void Agent::run() {
     case MARRY:
       // Both update positions to same location, and walk together
       printf("Getting married <%c,%d>\n", get_id().sex, get_id().name);
-
-      status = MARRIED;
-      if( my_id.sex == FEMALE) {
-        env->update_position_partner(this, partner->get_position().x, partner->get_position().y);
-        env->clean_position(my_position.x, my_position.y);
+      if (partner->get_partner() == this) {
+	status = MARRIED;
+        if( my_id.sex == FEMALE) {
+          env->update_position_partner(this, partner->get_position().x, partner->get_position().y);
+          env->clean_position(my_position.x, my_position.y);
+        }
+        ps = WANDER_M;
+      } else {
+        ps = DIVORCE;
       }
-      ps = WANDER_M;
       break;
 
     case DIVORCE:
       printf("Getting divorce <%c,%d>\n", get_id().sex, get_id().name);
       status = SINGLE;
-      ps = TO_REGISTRY;
+      env->clean_position_partner(my_position.x,my_position.y);
+      partner = NULL;
+      step();
+      step();
+      step();
+      step();
+      ps = WANDER_S;
       break;
 
     case WANDER_M:
       printf("Married wandering <%c,%d>\n", get_id().sex, get_id().name);
+      if (asked_divorce) {
+	asked_divorce = 0;
+	ps = DIVORCE;
+	break;
+      }
       if (new_partner) {
-        ps = DIVORCE;
+        ps = MARRY;
         new_partner = 0;
-      } else {
+	break;
+      }
         if (my_id.sex == MALE)
           step();
         else
@@ -141,7 +156,8 @@ void Agent::run() {
               printf("<%c,%d> said yes to <%c,%d>\n", neighbor->get_id().sex,
                       neighbor->get_id().name, get_id().sex, get_id().name);
               partner = neighbor;
-              ps = TO_REGISTRY;
+//              ps = TO_REGISTRY;
+              ps = MARRY;
             } else {
               printf("<%c,%d> was not interested in <%c,%d>\n", neighbor->get_id().sex,
                       neighbor->get_id().name, get_id().sex, get_id().name);
@@ -150,7 +166,6 @@ void Agent::run() {
             printf("Was not worthy <%c,%d>\n", get_id().sex, get_id().name);
           }
         }
-      }
       ps = WANDER_M;
       break;
   }
@@ -164,6 +179,10 @@ char Agent::get_status(){
   return status;
 }
 
+int Agent::get_state() {
+	return ps;
+}
+
 int Agent::marry_me(Agent* proposer) {
   if(status == SINGLE) {
     // Will accept any proposal if single
@@ -171,12 +190,14 @@ int Agent::marry_me(Agent* proposer) {
     status = MARRIED;
     return 1;
   }
-  else if (ps == WANDER_M){
+  //else if (ps == WANDER_M){
+  else {
     if(greater_pref(proposer)) {
       printf("<%c,%d> is accepting new partner <%c,%d>\n", proposer->get_id().sex,
             proposer->get_id().name, partner->get_id().sex, partner->get_id().name);
       new_partner = 1;
       partner = proposer;
+      status = MARRIED;
       return 1;
     }
   }
@@ -184,13 +205,14 @@ int Agent::marry_me(Agent* proposer) {
 }
 
 void Agent::divorce_me() {
-  status = SINGLE;
-  partner = NULL;
-  env->clean_position(my_position.x,my_position.y);
-  env->clean_position_partner(my_position.x,my_position.y);
-  step();
+  //status = SINGLE;
+  asked_divorce = 1;
+  //partner = NULL;
+  //env->clean_position(my_position.x,my_position.y);
+  //env->clean_position_partner(my_position.x,my_position.y);
+  //step();
 
-  ps = DIVORCE;
+  //ps = DIVORCE;
 }
 
 int Agent::greater_pref(Agent* a) {

@@ -30,6 +30,7 @@ public:
 	pos get_position();
   int marry_me(Agent* proposer);  // Gets asked by other agents
 	void divorce_me();
+	int get_state();
 
 private:
   int propose(Agent* proposed);   // Asks another agent
