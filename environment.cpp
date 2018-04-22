@@ -2,9 +2,17 @@
 
 // the top of the priority queue is the greatest element by default,
 // but we want the smallest, so flip the sign
+// bool operator<(const Node &n1, const Node &n2) {
+//   return n1.cost > n2.cost;
+// }
+// bool operator==(const Node &n1, const Node &n2) {
+//   return (n1.x == n2.x && n1.y == n2.y);
+// }
+
 bool operator<(const Node &n1, const Node &n2) {
-  return n1.cost > n2.cost;
+  return n1.f > n2.f;
 }
+
 bool operator==(const Node &n1, const Node &n2) {
   return (n1.x == n2.x && n1.y == n2.y);
 }
@@ -39,7 +47,7 @@ cell (*Environment::get_grid(void))[N][N] {
 
 void Environment::print_cell(int x, int y) {
   if(grid[x][y].free == 1){
-    printf(" _ ");
+    printf(" - ");
   } else if (grid[x][y].registry > 0) {
     printf("\e[34m C \e[0m");
     // printf(" C ");
@@ -272,162 +280,397 @@ int Environment::is_agent_here(Agent* a, int x, int y) {
   return 0;
 }
 
-void Environment::get_path_to_reg(pos start, pos target, vector<pos> &p) {
+void Environment::get_path_to_reg(pos start, pos target) {
   // Run A* from start to nearest registry
-  astar(grid, start, target, p);
+  astar(grid, start, target);
+}
+
+bool Environment::isWithinGrid(int cur_x, int cur_y){
+  if(cur_x >= 0 && cur_x < N && cur_y >=0 && cur_y < N){
+    return true;
+  }
+  else return false;
+}
+
+bool Environment::isUnBlocked(cell grid[N][N], int cur_x, int cur_y){
+  if(grid[cur_x][cur_y].free == 1){
+    return true;
+  }
+  else return false;
+}
+
+bool Environment::isDestination(int cur_x, int cur_y, int dest_x, int dest_y){
+  if(cur_x == dest_x && cur_y == dest_y){
+    return true;
+  }
+  else return false;
+}
+
+void Environment::tracePath(Node costs[N][N], pos goal){
+  printf("\nThe path from (A) to target (C) is \n");
+  int row = goal.x;
+  int col = goal.y;
+
+  pos p_temp;
+  p_temp.x = 0;
+  p_temp.y = 0;
+
+  stack<pos> Path;
+
+  while(!(costs[row][col].x == row && costs[row][col].y == col)){
+
+    p_temp.x = row;
+    p_temp.y = col;
+    Path.push(p_temp);
+    int temp_x = costs[row][col].x;
+    int temp_y = costs[row][col].y;
+    row = temp_x;
+    col = temp_y;
+  }
+
+  p_temp.x = row;
+  p_temp.y = col;
+  Path.push(p_temp);
+
+  while(!Path.empty()){
+    pos p = Path.top();
+    Path.pop();
+    printf("-> (%d,%d) \n", p.x, p.y);
+
+  }
+
+  return;
 }
 
 float Environment::h(int x1, int y1, int x2, int y2) {
   return sqrt( pow( (x2-x1),2) + pow( (y2-y1),2) );
 }
 
-void Environment::astar(cell matrix[N][N], pos start, pos goal, vector<pos> &path) {
+void Environment::astar(cell grid[N][N], pos start, pos goal) {
 
-  const float INF = std::numeric_limits<float>::infinity();
-
-  Node start_node(start.x, start.y, 0.);
-  Node goal_node(goal.x, goal.y, 0.);
-
-  float** costs = new float*[N];
-  for(int i = 0; i < N; ++i) {
-      costs[i] = new float[N];
-  }
-  for (int i = 0; i < N; ++i)
-    for (int j = 0; j < N; ++j)
-      costs[i][j] = INF;
-
-  costs[start.x][start.y] = 0.0;
-
-  std::priority_queue<Node> nodes_to_visit;
-  nodes_to_visit.push(start_node);
-
-  int* nbrs = new int[8]; // neighbor cells
-  int* nbrs_x = new int[8];
-  int* nbrs_y = new int[8];
-
-  bool solution_found = false;
-  while (!nodes_to_visit.empty()) {
-    Node cur = nodes_to_visit.top();
-
-    if (cur == goal_node) {
-      solution_found = true;
-      break;
+    // Pre-checks
+    if(!isWithinGrid(start.x, start.y)){
+      printf("Source is invalid\n");
+      return;
     }
 
-    nodes_to_visit.pop();
+    if(!isWithinGrid(goal.x, goal.y)){
+      printf("Target is invalid\n");
+      return;
+    }
 
-    // Check neighbors for free cells, bounds and walls
-    // The order of check is top to bottom, left to right
-    if (cur.x-1 >= 0 && cur.x-1 < N && cur.y-1 >= 0 && cur.y-1 < N &&  matrix[cur.x-1][cur.y-1].free == 1) {
-        nbrs[0] = 1;
-        nbrs_x[0] = cur.x-1;
-        nbrs_y[0] = cur.y-1;
-      } else {
-        nbrs[0] = -1;
-        nbrs_x[0] = -1;
-        nbrs_y[0] = -1;
+    if(isDestination(start.x, start.y, goal.x, goal.y)){
+      printf("We are already at the destination!");
+      return;
+    }
+
+    // Create a closed list and initialise it to false which means
+    // that no cell has been visited yet
+    // This closed list is implemented as a boolean 2D array
+    bool closedList[N][N];
+    memset(closedList, false, sizeof (closedList));
+
+
+    // 2D array to hold the node cost details
+    Node costs[N][N];
+
+    for(int i=0; i < N; i++){
+      for(int j=0; j < N; j++){
+        costs[i][j].x = i;
+        costs[i][j].y = j;
+        costs[i][j].f = 1000;
+        costs[i][j].g = 1000;
+        costs[i][j].h = 1000;
       }
+    }
 
-    if (cur.x >= 0 && cur.x < N && cur.y-1 >= 0 && cur.y-1 < N &&  matrix[cur.x][cur.y-1].free == 1) {
-        nbrs[1] = 1;
-        nbrs_x[1] = cur.x;
-        nbrs_y[1] = cur.y-1;
-      } else {
-        nbrs[1] = -1;
-        nbrs_x[1] = -1;
-        nbrs_y[1] = -1;
-      }
+    // Initializing the start and goal node
+    Node start_node(start.x, start.y, 0., 0., 0.);
+    Node goal_node(goal.x, goal.y, 0., 0., 0.);
 
-    if (cur.x+1 >= 0 && cur.x+1 < N && cur.y-1 >= 0 && cur.y-1 < N && matrix[cur.x+1][cur.y-1].free == 1) {
-        nbrs[2] = 1;
-        nbrs_x[2] = cur.x+1;
-        nbrs_y[2] = cur.y-1;
-      } else {
-        nbrs[2] = -1;
-        nbrs_x[2] = -1;
-        nbrs_y[2] = -1;
-      }
+    priority_queue<Node> nodes_to_visit;
 
-    if (cur.x-1 >= 0 && cur.x-1 < N && cur.y >= 0 && cur.y < N &&  matrix[cur.x-1][cur.y].free == 1) {
-        nbrs[3] = 1;
-        nbrs_x[3] = cur.x-1;
-        nbrs_y[3] = cur.y;
-      } else {
-        nbrs[3] = -1;
-        nbrs_x[3] = -1;
-        nbrs_y[3] = -1;
-      }
+    nodes_to_visit.push(start_node);
 
-    if (cur.x+1 >= 0 && cur.x+1 < N && cur.y >= 0 && cur.y < N && matrix[cur.x+1][cur.y].free == 1) {
-        nbrs[4] = 1;
-        nbrs_x[4] = cur.x+1;
-        nbrs_y[4] = cur.y;
-      } else {
-        nbrs[4] = -1;
-        nbrs_x[4] = -1;
-        nbrs_y[4] = -1;
-      }
+    bool path_found = false;
+    while(!nodes_to_visit.empty()){
 
-    if (cur.x-1 >= 0 && cur.x-1 < N && cur.y+1 >= 0 && cur.y+1 < N && matrix[cur.x-1][cur.y+1].free == 1) {
-        nbrs[5] = 1;
-        nbrs_x[5] = cur.x-1;
-        nbrs_y[5] = cur.y+1;
-      } else {
-        nbrs[5] = -1;
-        nbrs_x[5] = -1;
-        nbrs_y[5] = -1;
-      }
+      //Copy the first node and removes it from the queue
+      Node cur = nodes_to_visit.top();
 
-    if (cur.x >= 0 && cur.x < N && cur.y+1 >= 0 && cur.y+1 < N && matrix[cur.x][cur.y+1].free == 1) {
-        nbrs[6] = 1;
-        nbrs_x[6] = cur.x;
-        nbrs_y[6] = cur.y+1;
-      } else {
-        nbrs[6] = -1;
-        nbrs_x[6] = -1;
-        nbrs_y[6] = -1;
-      }
+      nodes_to_visit.pop();
 
-    if (cur.x+1 >= 0 && cur.x+1 < N && cur.y+1 >= 0 && cur.y+1 < N && matrix[cur.x+1][cur.y+1].free == 1) {
-        nbrs[7] = 1;
-        nbrs_x[7] = cur.x+1;
-        nbrs_y[7] = cur.y+1;
-      } else {
-        nbrs[7] = -1;
-        nbrs_x[7] = -1;
-        nbrs_y[7] = -1;
-      }
+      // Check neighbors for free cells, bounds and walls
+      // The order of check is top to bottom, left to right
 
-    float heuristic_cost;
-    for (int i = 0; i < 8; ++i) {
-      if (nbrs[i] >= 0) {
-        // Give the cost of 1 for each move - (g(n))
-        float new_cost = costs[cur.x][cur.y] + 1;
+      float gNew, hNew, fNew;
+      gNew = hNew = fNew = 0.;
+      int x = cur.x;
+      int y = cur.y;
 
-        if (new_cost < costs[nbrs_x[i]][nbrs_y[i]]) {
-            heuristic_cost = h(nbrs_x[i],nbrs_y[i],goal.x,goal.y);
+      // Already visited the current node
+      closedList[x][y] = true;
 
-          // paths with lower expected cost are explored first - f(n) = g(n) + h(n)
-          float priority = new_cost + heuristic_cost;
-          nodes_to_visit.push(Node(nbrs_x[i], nbrs_y[i], priority));
+      //NW
+      if(isWithinGrid(x-1, y-1) == true){
+        //printf("\nNW - ");
+        if(isDestination(x-1, y-1, goal.x, goal.y)){
+          // Set the parent cell of the current cell - destination found!
+          costs[x-1][y-1].x = x;
+          costs[x-1][y-1].y = y;
+          printf("The destination cell is found\n");
+          tracePath(costs,goal);
+          path_found = true;
+          return;
+        }
+        // If node has been already visited (i.e closedList[x][y] = true), then do nothing
+        // Else, do the below
+        else if(closedList[x-1][y-1] == false && isUnBlocked(grid, x-1, y-1)){
+          gNew = costs[x][y].g + 1.0;
+          hNew = h(x, y, x-1, y-1);
+          fNew = gNew + hNew;
+          if(costs[x-1][y-1].f == 1000 || costs[x-1][y-1].f > fNew){
+            //printf(" Current (%d,%d) - Checking (%d,%d) | gNew = %2.2f | hNew = %2.2f | fNew = %2.2f\n", x, y, x-1, y-1, gNew, hNew, fNew);
 
-          costs[nbrs_x[i]][nbrs_y[i]] = new_cost;
-          pos p;
-          p.x = cur.x;
-          p.y = cur.y;
-          path.push_back(p);
+            nodes_to_visit.push(Node(x-1, y-1, fNew, gNew, hNew));
+
+            costs[x-1][y-1].x = x;
+            costs[x-1][y-1].y = y;
+            costs[x-1][y-1].f = fNew;
+            costs[x-1][y-1].g = gNew;
+            costs[x-1][y-1].h = hNew;
+
+          }
         }
       }
+
+      //N
+      if(isWithinGrid(x  , y-1) == true){
+        //printf("\nN  - ");
+        if(isDestination(x, y-1, goal.x, goal.y)){
+          // Set the parent cell of the current cell - destination found!
+          costs[x][y-1].x = x;
+          costs[x][y-1].y = y;
+          printf("The destination cell is found\n");
+          tracePath(costs,goal);
+          path_found = true;
+          return;
+        }
+        // If node has been already visited (i.e closedList[x][y] = true), then do nothing
+        // Else, do the below
+        else if(closedList[x][y-1] == false && isUnBlocked(grid, x, y-1)){
+          gNew = costs[x][y].g + 1.0;
+          hNew = h(x, y, x, y-1);
+          fNew = gNew + hNew;
+
+          if(costs[x][y-1].f == 1000 || costs[x][y-1].f > fNew){
+            //printf(" Current (%d,%d) - Checking (%d,%d) | gNew = %2.2f | hNew = %2.2f | fNew = %2.2f\n", x, y, x, y-1, gNew, hNew, fNew);
+            nodes_to_visit.push(Node(x, y-1, fNew, gNew, hNew));
+
+            costs[x][y-1].x = x;
+            costs[x][y-1].y = y;
+            costs[x][y-1].f = fNew;
+            costs[x][y-1].g = gNew;
+            costs[x][y-1].h = hNew;
+
+          }
+        }
+      }
+      //NE
+      if(isWithinGrid(x+1, y-1) == true){
+        //printf("\nNE - ");
+        if(isDestination(x+1, y-1, goal.x, goal.y)){
+          // Set the parent cell of the current cell - destination found!
+          costs[x+1][y-1].x = x;
+          costs[x+1][y-1].y = y;
+          printf("The destination cell is found\n");
+          tracePath(costs,goal);
+          path_found = true;
+          return;
+        }
+        // If node has been already visited (i.e closedList[x][y] = true), then do nothing
+        // Else, do the below
+        else if(closedList[x+1][y-1] == false && isUnBlocked(grid, x+1, y-1)){
+          gNew = costs[x][y].g + 1.0;
+          hNew = h(x, y, x+1, y-1);
+          fNew = gNew + hNew;
+
+          if(costs[x+1][y-1].f == 1000 || costs[x+1][y-1].f > fNew){
+            //printf(" Current (%d,%d) - Checking (%d,%d) | gNew = %2.2f | hNew = %2.2f | fNew = %2.2f\n", x, y, x+1, y-1, gNew, hNew, fNew);
+            nodes_to_visit.push(Node(x+1, y-1, fNew, gNew, hNew));
+
+            costs[x+1][y-1].x = x;
+            costs[x+1][y-1].y = y;
+            costs[x+1][y-1].f = fNew;
+            costs[x+1][y-1].g = gNew;
+            costs[x+1][y-1].h = hNew;
+          }
+        }
+      }
+      //W
+      if(isWithinGrid(x-1, y)   == true){
+        //printf("\nW  - ");
+        if(isDestination(x-1, y, goal.x, goal.y)){
+          // Set the parent cell of the current cell - destination found!
+          costs[x-1][y].x = x;
+          costs[x-1][y].y = y;
+          printf("The destination cell is found\n");
+          tracePath(costs,goal);
+          path_found = true;
+          return;
+        }
+        // If node has been already visited (i.e closedList[x][y] = true), then do nothing
+        // Else, do the below
+        else if(closedList[x-1][y] == false && isUnBlocked(grid, x-1, y)){
+          gNew = costs[x][y].g + 1.0;
+          hNew = h(x, y, x-1, y);
+          fNew = gNew + hNew;
+
+          if(costs[x-1][y].f == 1000 || costs[x-1][y].f > fNew){
+            //printf(" Current (%d,%d) - Checking (%d,%d) | gNew = %2.2f | hNew = %2.2f | fNew = %2.2f\n", x, y, x-1, y, gNew, hNew, fNew);
+            nodes_to_visit.push(Node(x-1, y, fNew, gNew, hNew));
+
+            costs[x-1][y].x = x;
+            costs[x-1][y].y = y;
+            costs[x-1][y].f = fNew;
+            costs[x-1][y].g = gNew;
+            costs[x-1][y].h = hNew;
+
+          }
+        }
+      }
+      //E
+      if(isWithinGrid(x+1, y)   == true){
+        //printf("\nE  - ");
+        if(isDestination(x+1, y, goal.x, goal.y)){
+          // Set the parent cell of the current cell - destination found!
+          costs[x+1][y].x = x;
+          costs[x+1][y].y = y;
+          printf("The destination cell is found\n");
+          tracePath(costs,goal);
+          path_found = true;
+          return;
+        }
+        // If node has been already visited (i.e closedList[x][y] = true), then do nothing
+        // Else, do the below
+        else if(closedList[x+1][y] == false && isUnBlocked(grid, x+1, y)){
+          gNew = costs[x][y].g + 1.0;
+          hNew = h(x, y, x+1, y);
+          fNew = gNew + hNew;
+          if(costs[x+1][y].f == 1000 || costs[x+1][y].f > fNew){
+            //printf(" Current (%d,%d) - Checking (%d,%d) | gNew = %2.2f | hNew = %2.2f | fNew = %2.2f\n", x, y, x+1, y, gNew, hNew, fNew);
+            nodes_to_visit.push(Node(x+1, y, fNew, gNew, hNew));
+
+            costs[x+1][y].x = x;
+            costs[x+1][y].y = y;
+            costs[x+1][y].f = fNew;
+            costs[x+1][y].g = gNew;
+            costs[x+1][y].h = hNew;
+
+          }
+        }
+      }
+      //SW
+      if(isWithinGrid(x-1, y+1) == true){
+        //printf("\nSW - ");
+        if(isDestination(x-1, y+1, goal.x, goal.y)){
+          // Set the parent cell of the current cell - destination found!
+          costs[x-1][y+1].x = x;
+          costs[x-1][y+1].y = y;
+          printf("The destination cell is found\n");
+          tracePath(costs,goal);
+          path_found = true;
+          return;
+        }
+        // If node has been already visited (i.e closedList[x][y] = true), then do nothing
+        // Else, do the below
+        else if(closedList[x-1][y+1] == false && isUnBlocked(grid, x-1, y+1)){
+          gNew = costs[x][y].g + 1.0;
+          hNew = h(x, y, x-1, y+1);
+          fNew = gNew + hNew;
+          if(costs[x-1][y+1].f == 1000 || costs[x-1][y+1].f > fNew){
+            //printf(" Current (%d,%d) - Checking (%d,%d) | gNew = %2.2f | hNew = %2.2f | fNew = %2.2f\n", x, y, x-1, y+1, gNew, hNew, fNew);
+            nodes_to_visit.push(Node(x-1, y+1, fNew, gNew, hNew));
+
+            costs[x-1][y+1].x = x;
+            costs[x-1][y+1].y = y;
+            costs[x-1][y+1].f = fNew;
+            costs[x-1][y+1].g = gNew;
+            costs[x-1][y+1].h = hNew;
+
+          }
+        }
+      }
+      //S
+      if(isWithinGrid(x,   y+1) == true){
+        //printf("\nS  - ");
+        if(isDestination(x, y+1, goal.x, goal.y)){
+          // Set the parent cell of the current cell - destination found!
+          costs[x][y+1].x = x;
+          costs[x][y+1].y = y;
+          printf("The destination cell is found\n");
+          tracePath(costs,goal);
+          path_found = true;
+          return;
+        }
+        // If node has been already visited (i.e closedList[x][y] = true), then do nothing
+        // Else, do the below
+        else if(closedList[x][y+1] == false && isUnBlocked(grid, x, y+1)){
+          gNew = costs[x][y].g + 1.0;
+          hNew = h(x, y, x, y+1);
+          fNew = gNew + hNew;
+
+          if(costs[x][y+1].f == 1000 || costs[x][y+1].f > fNew){
+            //printf(" Current (%d,%d) - Checking (%d,%d) | gNew = %2.2f | hNew = %2.2f | fNew = %2.2f\n", x, y, x, y+1, gNew, hNew, fNew);
+            nodes_to_visit.push(Node(x, y+1, fNew, gNew, hNew));
+
+            costs[x][y+1].x = x;
+            costs[x][y+1].y = y;
+            costs[x][y+1].f = fNew;
+            costs[x][y+1].g = gNew;
+            costs[x][y+1].h = hNew;
+
+          }
+        }
+      }
+      //SE
+      if(isWithinGrid(x+1, y+1) == true){
+        //printf("\nSE - ");
+        if(isDestination(x+1, y+1, goal.x, goal.y)){
+          // Set the parent cell of the current cell - destination found!
+          costs[x+1][y+1].x = x;
+          costs[x+1][y+1].y = y;
+          printf("The destination cell is found\n");
+          tracePath(costs,goal);
+          path_found = true;
+          return;
+        }
+        // If node has been already visited (i.e closedList[x][y] = true), then do nothing
+        // Else, do the below
+        else if(closedList[x+1][y+1] == false && isUnBlocked(grid, x+1, y+1)){
+          gNew = costs[x][y].g + 1.0;
+          hNew = h(x, y, x+1, y+1);
+          fNew = gNew + hNew;
+
+          if(costs[x+1][y+1].f == 1000 || costs[x+1][y+1].f > fNew){
+            //printf(" Current (%d,%d) - Checking (%d,%d) | gNew = %2.2f | hNew = %2.2f | fNew = %2.2f\n", x, y, x+1, y+1, gNew, hNew, fNew);
+            nodes_to_visit.push(Node(x+1, y+1, fNew, gNew, hNew));
+
+            costs[x+1][y+1].x = x;
+            costs[x+1][y+1].y = y;
+            costs[x+1][y+1].f = fNew;
+            costs[x+1][y+1].g = gNew;
+            costs[x+1][y+1].h = hNew;
+          }
+        }
+      }
+
     }
-  }
 
-  for(int i = 0; i < N; ++i) {
-    delete [] costs[i];
-  }
-  delete [] costs;
-  delete [] nbrs;
-  delete [] nbrs_x;
-  delete [] nbrs_y;
+    // Could not find any paths to destination
+    if(path_found == false){
+      printf("Failed to find the destination cell\n");
+    }
 
-  return;
-}
+    return;
+  }

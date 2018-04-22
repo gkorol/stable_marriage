@@ -75,7 +75,7 @@ void Agent::run() {
     case TO_REGISTRY:
       reg = env->get_nearest_registry(my_position);
       printf("Path to registry at %d,%d <%c,%d>\n", reg.x, reg.y, get_id().sex, get_id().name);
-      // env->get_path_to_reg(my_position, reg, path);
+       env->get_path_to_reg(my_position, reg);
       // if (!path.empty())
         ps = ROUTE_TO_REG;
       // else
@@ -130,20 +130,20 @@ void Agent::run() {
     case WANDER_M:
       printf("Married wandering <%c,%d>\n", get_id().sex, get_id().name);
       if (asked_divorce) {
-	asked_divorce = 0;
-	ps = DIVORCE;
-	break;
+	      asked_divorce = 0;
+	      ps = DIVORCE;
+	      break;
       }
       if (new_partner) {
         ps = MARRY;
         new_partner = 0;
-	break;
+	      break;
       }
         if (my_id.sex == MALE)
           step();
         else
           env->update_position_partner(this, partner->get_position().x, partner->get_position().y);
-        // Sombody new?
+        // Somebody new?
         neighbor = env->get_nearst_agent(my_position,get_opposed_sex());
         if ( neighbor != NULL && neighbor != partner ) {
           // Found someone cooler
@@ -156,7 +156,7 @@ void Agent::run() {
               printf("<%c,%d> said yes to <%c,%d>\n", neighbor->get_id().sex,
                       neighbor->get_id().name, get_id().sex, get_id().name);
               partner = neighbor;
-//              ps = TO_REGISTRY;
+              ps = TO_REGISTRY;
               ps = MARRY;
             } else {
               printf("<%c,%d> was not interested in <%c,%d>\n", neighbor->get_id().sex,
