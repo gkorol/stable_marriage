@@ -75,16 +75,29 @@ void Agent::run() {
     case TO_REGISTRY:
       reg = env->get_nearest_registry(my_position);
       printf("Path to registry at %d,%d <%c,%d>\n", reg.x, reg.y, get_id().sex, get_id().name);
-       env->get_path_to_reg(my_position, reg);
+      env->get_path_to_reg(my_position, reg);
       // if (!path.empty())
-        ps = ROUTE_TO_REG;
+      ps = ROUTE_TO_REG;
       // else
         // cout << "ERROR GETTING PATH TO REGISTRY!" << endl;
       break;
 
     case ROUTE_TO_REG:
-      printf("En route to registry %d,%d <%c,%d>\n",
-              reg.x, reg.y, get_id().sex, get_id().name);
+      printf("In route to registry %d,%d <%c,%d>\n", reg.x, reg.y, get_id().sex, get_id().name);
+      // code for agent to go to registry goes here
+      pos p;
+
+      PrivatePath = env->path;
+
+      while(!PrivatePath.empty()){
+        p = PrivatePath.top();
+        env->update_position(this, p.x, p.y);
+        my_position.x = p.x;
+        my_position.y = p.y;
+        //printf("Agent -> (%d,%d) \n", my_position.x, my_position.y);
+        PrivatePath.pop();
+      }
+
       ps = WAIT_FIANCE;
       break;
 

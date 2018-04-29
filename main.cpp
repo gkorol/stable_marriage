@@ -11,8 +11,17 @@ void print_grid(Environment* e);
 
 int main(int argc, char** argv) {
   int couples, regs, t = 0;
+  int stable = 0;
+  int c_inicial = 0;
+  int c_final = 0;
   vector<Agent> males;
   vector<Agent> females;
+
+  // Check if input file has been given to the program
+  if(argc != 2){
+    printf("[ERROR] - No input file provided.\nUsage: %s input_[Number of couples]\n", argv[0]);
+    return 0;
+  }
 
   Environment* env = new Environment();
 
@@ -21,7 +30,7 @@ int main(int argc, char** argv) {
 
   // Read from input file
   string line;
-  ifstream myfile ("input");
+  ifstream myfile (argv[1]);
   int line_c = 0;
   if (myfile.is_open()) {
 
@@ -72,6 +81,19 @@ int main(int argc, char** argv) {
 
   // Main loop
   for( t=0; t<MAX_IT; t++) {
+  //   if (env->finished()){
+	// //break;
+	// if (stable == 0)
+	// 	c_inicial = t;
+	// if (stable == 5)
+	// 	c_final = t;
+	// if ((c_final - c_inicial) >= 5)
+	// 	break;
+	// else
+	// 	stable = 0;
+  //
+	// stable++;
+  //   }
     for( int i=0; i<(couples*2); i++) {
       std::system("clear");
       env->get_agent( i )->run();
@@ -80,20 +102,18 @@ int main(int argc, char** argv) {
       cout << "Cycle = " << t << endl;
       print_grid(env);
       if (t>0) {
-       env->print_agents();
+      env->print_agents();
         sleep(1);
       }
       cout << endl << endl;
     }
-    if (env->finished()){
-	break;
-    }
   }
-  // print_grid(env);
-  // env->print_agents();
-  // cout << endl;
-  // env->who_is_happy();
-  // cout << "Total cycles = " << t << endl;
+   // // Print que mostra somente o estado final na tela
+   // print_grid(env);
+   // env->print_agents();
+   // cout << endl;
+   // env->who_is_happy();
+   // cout << "Total cycles = " << t << endl;
   return 0;
 }
 

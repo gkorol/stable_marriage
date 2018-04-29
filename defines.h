@@ -7,7 +7,7 @@ class Agent;
 #define MAX_IT 30000
 
 // Grid size
-#define N 11
+#define N 20
 
 // Total number of registries
 // #define REG_TOTAL 4
@@ -52,6 +52,7 @@ struct cell{
     char couple;    // 1 - if a couple's position, 0 - else
     Agent* agent;   // &id if agent, NULL - else
     Agent* agent_partner;
+    int path;
 };
 
 #endif

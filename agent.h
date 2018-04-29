@@ -8,6 +8,7 @@
 #include <time.h>
 #include "defines.h"
 #include "environment.h"
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -42,12 +43,12 @@ private:
 	pos my_position;
   Agent* partner;           // id of partner if married
 	int new_partner;					// Need to get divorce
-	int asked_divorce;					// partner asked divorce
+	int asked_divorce;				// partner asked divorce
 	pos reg;									// Registry
   char status;              // SINGLE OR MARRIED
   vector<int> preferences;  // Vector of preferences
   Environment* env;         // Pointer to environment object
-	vector<pos> path;					// Vector of positions that lead to the registry
+	stack<pos> PrivatePath;					// Vector of positions that lead to the registry
 	int walking_pattern;			// Keeps track of the walking pattern through cycles
 };
 

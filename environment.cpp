@@ -33,6 +33,7 @@ Environment::Environment() {
       grid[i][j].agent = NULL;
       grid[i][j].couple = 0;
       grid[i][j].agent_partner = NULL;
+      grid[i][j].path = 0;
     }
   }
 }
@@ -46,20 +47,22 @@ cell (*Environment::get_grid(void))[N][N] {
 }
 
 void Environment::print_cell(int x, int y) {
-  if(grid[x][y].free == 1){
-    printf(" - ");
+  if(grid[x][y].path == 1){
+    printf("\e[105m * \e[0m");
   } else if (grid[x][y].registry > 0) {
-    printf("\e[34m C \e[0m");
+    printf("\e[104m C \e[0m");
     // printf(" C ");
   } else if (grid[x][y].wall == 1) {
-    printf("\e[91m # \e[0m");
+    printf("\e[101m # \e[0m");
     // printf(" # ");
   } else if (grid[x][y].couple == 1) {
-    printf("\e[33m %% \e[0m");
+    printf("\e[103m %% \e[0m");
     // printf(" %% ");
   } else if (grid[x][y].agent != NULL) {
-    printf("\e[92m %c \e[0m", grid[x][y].agent->get_id().sex);
+    printf("\e[102m %c \e[0m", grid[x][y].agent->get_id().sex);
     // printf(" %c ", grid[x][y].agent->get_id().sex);
+  } else if (grid[x][y].free == 1) {
+    printf("\e[47m - \e[0m");
   }
 }
 
@@ -104,7 +107,8 @@ int Environment::finished() {
 	if (active_ags[i]->get_state() == WANDER_M)
 		total++;
    }
-   if (total == active_ags.size() && who_is_happy() == active_ags.size()){
+   //if (total == active_ags.size() && who_is_happy() == active_ags.size()/2){
+   if (total == active_ags.size()){
 	return 1;
    } else {
 	return 0;
@@ -140,7 +144,7 @@ void Environment::add_registries(int number) {
       int x = rand() % (N-1);
       int y = rand() % (N-1);
 
-      //printf("Values of X and Y of registries: %d %d\n", x, y);
+      printf("Values of X and Y of registries: %d %d\n", x, y);
 
       if (grid[x][y].free == 1) {
         grid[x][y].free = INF;
@@ -307,37 +311,38 @@ bool Environment::isDestination(int cur_x, int cur_y, int dest_x, int dest_y){
 }
 
 void Environment::tracePath(Node costs[N][N], pos goal){
-  printf("\nThe path from (A) to target (C) is \n");
+
+  //printf("\nThe path from (A) to target (C) is \n");
   int row = goal.x;
   int col = goal.y;
 
   pos p_temp;
+  pos p;
   p_temp.x = 0;
   p_temp.y = 0;
-
-  stack<pos> Path;
 
   while(!(costs[row][col].x == row && costs[row][col].y == col)){
 
     p_temp.x = row;
     p_temp.y = col;
-    Path.push(p_temp);
+    path.push(p_temp);
     int temp_x = costs[row][col].x;
     int temp_y = costs[row][col].y;
+    //grid[row][col].free = 0;
+    //grid[row][col].path = 1;
     row = temp_x;
     col = temp_y;
   }
 
   p_temp.x = row;
   p_temp.y = col;
-  Path.push(p_temp);
+  path.push(p_temp);
 
-  while(!Path.empty()){
-    pos p = Path.top();
-    Path.pop();
-    printf("-> (%d,%d) \n", p.x, p.y);
-
-  }
+  // while(!path.empty()){
+  //   p = path.top();
+  //   printf("-> (%d,%d) \n", p.x, p.y);
+  //   path.pop();
+  // }
 
   return;
 }

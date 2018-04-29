@@ -9,7 +9,7 @@
 #include <limits>
 #include "defines.h"
 #include "agent.h"
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 
 // Grid indexes:
 // (x,y)
@@ -57,6 +57,7 @@ public:
   void add_agent(Agent* a);
   int is_agent_here(Agent* a, int x, int y);
   Agent* get_agent(int i);
+  stack<pos> path;
 
 private:
   cell grid[N][N];              // Main matrix
