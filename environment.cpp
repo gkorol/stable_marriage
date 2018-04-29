@@ -51,18 +51,39 @@ void Environment::print_cell(int x, int y) {
     printf("\e[105m * \e[0m");
   } else if (grid[x][y].registry > 0) {
     printf("\e[104m C \e[0m");
-    // printf(" C ");
+
   } else if (grid[x][y].wall == 1) {
     printf("\e[101m # \e[0m");
-    // printf(" # ");
+
   } else if (grid[x][y].couple == 1) {
     printf("\e[103m %% \e[0m");
-    // printf(" %% ");
+
+  } else if (grid[x][y].couple == 2) {
+    printf("\e[105m %c \e[0m", grid[x][y].agent->get_id().sex);
+
   } else if (grid[x][y].agent != NULL) {
     printf("\e[102m %c \e[0m", grid[x][y].agent->get_id().sex);
-    // printf(" %c ", grid[x][y].agent->get_id().sex);
+
   } else if (grid[x][y].free == 1) {
     printf("\e[47m - \e[0m");
+  }
+}
+
+void Environment::print_grid() {
+  // Draw horizontal indexes
+  printf("   ");
+  for (int i=0; i<N; i++)
+    printf("%2d ", i);
+    cout << endl;
+
+  // Draw vertical indexes
+  for (int j=0; j<N; j++) {
+    printf("%2d ", j);
+    // Draw the initial grid
+    for (int i=0; i<N; i++) {
+      print_cell(i,j);
+    }
+    cout << endl;
   }
 }
 
@@ -179,6 +200,10 @@ Agent* Environment::get_agent(int i) {
   return active_ags.at(i);
 }
 
+stack<pos> Environment::get_path(){
+  return path;
+}
+
 Agent* Environment::get_nearst_agent(pos p, char s) {
   int x = p.x;
   int y = p.y;
@@ -232,6 +257,10 @@ void Environment::update_position(Agent* a, int new_x, int new_y) {
   grid[a->get_position().x][a->get_position().y].agent = NULL;
   grid[a->get_position().x][a->get_position().y].free = 1;
   grid[a->get_position().x][a->get_position().y].couple = 0;
+
+  if( a->get_status() == TAKEN) {
+    grid[new_x][new_y].couple = 2;
+  }
 
   if( a->get_status() == MARRIED) {
     grid[new_x][new_y].couple = 1;
@@ -288,6 +317,8 @@ void Environment::get_path_to_reg(pos start, pos target) {
   // Run A* from start to nearest registry
   astar(grid, start, target);
 }
+
+
 
 bool Environment::isWithinGrid(int cur_x, int cur_y){
   if(cur_x >= 0 && cur_x < N && cur_y >=0 && cur_y < N){

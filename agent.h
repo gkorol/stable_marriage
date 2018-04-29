@@ -45,7 +45,7 @@ private:
 	int new_partner;					// Need to get divorce
 	int asked_divorce;				// partner asked divorce
 	pos reg;									// Registry
-  char status;              // SINGLE OR MARRIED
+  char status;              // SINGLE, TAKEN or MARRIED
   vector<int> preferences;  // Vector of preferences
   Environment* env;         // Pointer to environment object
 	stack<pos> PrivatePath;					// Vector of positions that lead to the registry

@@ -13,6 +13,7 @@ class Agent;
 // #define REG_TOTAL 4
 
 // Status
+#define TAKEN 2
 #define MARRIED 1
 #define SINGLE  0
 
@@ -49,7 +50,7 @@ struct cell{
     char free;      // Make it easy to check: 1 - free, INF - else
     char wall;      // 1 - wall cell, 0 - else
     int  registry;  // # of registry, -1 - else
-    char couple;    // 1 - if a couple's position, 0 - else
+    char couple;    // 2 - going to registry, 1 - if a couple's position, 0 - else
     Agent* agent;   // &id if agent, NULL - else
     Agent* agent_partner;
     int path;

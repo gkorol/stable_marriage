@@ -49,6 +49,7 @@ public:
   void clean_position_partner(int x, int y);
   cell (*get_grid(void))[N][N];
   void print_cell(int x, int y);
+  void print_grid();
   void print_agents();
   int  who_is_happy();
   int  finished();
@@ -57,13 +58,15 @@ public:
   void add_agent(Agent* a);
   int is_agent_here(Agent* a, int x, int y);
   Agent* get_agent(int i);
-  stack<pos> path;
+  stack<pos> get_path();
+
 
 private:
   cell grid[N][N];              // Main matrix
   vector<pos> registries;
   vector<pos> walls;
   vector<Agent*> active_ags;     // Vector of active agents
+  stack<pos> path;
 
   bool isWithinGrid(int cur_x, int cur_y);
   bool isUnBlocked(cell grid[N][N], int cur_x, int cur_y);

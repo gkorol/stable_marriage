@@ -81,56 +81,38 @@ int main(int argc, char** argv) {
 
   // Main loop
   for( t=0; t<MAX_IT; t++) {
-  //   if (env->finished()){
-	// //break;
-	// if (stable == 0)
-	// 	c_inicial = t;
-	// if (stable == 5)
-	// 	c_final = t;
-	// if ((c_final - c_inicial) >= 5)
-	// 	break;
-	// else
-	// 	stable = 0;
-  //
-	// stable++;
-  //   }
+    if (env->finished()){
+  	//break;
+  	if (stable == 0)
+  		c_inicial = t;
+  	if (stable == 5)
+  		c_final = t;
+  	if ((c_final - c_inicial) >= 5)
+  		break;
+  	else
+  		stable = 0;
+
+  	stable++;
+    }
     for( int i=0; i<(couples*2); i++) {
       std::system("clear");
-      env->get_agent( i )->run();
+      env->get_agent(i)->run();
       cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
       <<"> @ "<< t << " cycles" << endl;
       cout << "Cycle = " << t << endl;
-      print_grid(env);
+      env->print_grid();
       if (t>0) {
       env->print_agents();
         sleep(1);
       }
       cout << endl << endl;
     }
+    // Print que mostra somente o estado final na tela
+    // env->print_grid();
+    // env->print_agents();
+    // cout << endl;
+    // env->who_is_happy();
+    // cout << "Total cycles = " << t << endl;
   }
-   // // Print que mostra somente o estado final na tela
-   // print_grid(env);
-   // env->print_agents();
-   // cout << endl;
-   // env->who_is_happy();
-   // cout << "Total cycles = " << t << endl;
   return 0;
-}
-
-void print_grid(Environment* e) {
-  // Draw horizontal indexes
-  printf("   ");
-  for (int i=0; i<N; i++)
-    printf("%2d ", i);
-    cout << endl;
-
-  // Draw vertical indexes
-  for (int j=0; j<N; j++) {
-    printf("%2d ", j);
-    // Draw the initial grid
-    for (int i=0; i<N; i++) {
-      e->print_cell(i,j);
-    }
-    cout << endl;
-  }
 }

@@ -43,7 +43,7 @@ void Agent::run() {
 
     case WANDER_S:
       printf("Single wandering <%c,%d>\n", get_id().sex, get_id().name);
-      if (status == MARRIED) {
+      if (status == TAKEN) {
         // Said yes to someone
         ps = TO_REGISTRY;
       } else {
@@ -57,7 +57,7 @@ void Agent::run() {
             reg.x = 0; reg.y = 0;
             printf("<%c,%d> said yes to <%c,%d>\n", neighbor->get_id().sex,
                     neighbor->get_id().name, get_id().sex, get_id().name);
-            status = MARRIED;
+            status = TAKEN;
             partner = neighbor;
             ps = TO_REGISTRY;
           } else {
@@ -76,10 +76,11 @@ void Agent::run() {
       reg = env->get_nearest_registry(my_position);
       printf("Path to registry at %d,%d <%c,%d>\n", reg.x, reg.y, get_id().sex, get_id().name);
       env->get_path_to_reg(my_position, reg);
-      // if (!path.empty())
-      ps = ROUTE_TO_REG;
-      // else
-        // cout << "ERROR GETTING PATH TO REGISTRY!" << endl;
+
+      PrivatePath = env->get_path();
+      if (!PrivatePath.empty()){
+        ps = ROUTE_TO_REG;
+      }else cout << "ERROR GETTING PATH TO REGISTRY!" << endl;
       break;
 
     case ROUTE_TO_REG:
@@ -87,24 +88,24 @@ void Agent::run() {
       // code for agent to go to registry goes here
       pos p;
 
-      PrivatePath = env->path;
-
-      while(!PrivatePath.empty()){
-        p = PrivatePath.top();
+      p = PrivatePath.top();
+      if(p.x == reg.x && p.y == reg.y){
+        // Quando notar que chegou no cartório, para antes de entrar nele
+        PrivatePath.pop();
+        ps = WAIT_FIANCE;
+      }else{
         env->update_position(this, p.x, p.y);
         my_position.x = p.x;
         my_position.y = p.y;
-        //printf("Agent -> (%d,%d) \n", my_position.x, my_position.y);
         PrivatePath.pop();
       }
 
-      ps = WAIT_FIANCE;
       break;
 
     case WAIT_FIANCE:
       printf("Waiting for my fiance <%c,%d>\n", get_id().sex, get_id().name);
       if (env->is_agent_here(partner,reg.x, reg.y)){
-        if (status == MARRIED)
+        if (status == TAKEN)
           ps = MARRY;
         else
           ps = WANDER_S;
@@ -117,7 +118,7 @@ void Agent::run() {
       // Both update positions to same location, and walk together
       printf("Getting married <%c,%d>\n", get_id().sex, get_id().name);
       if (partner->get_partner() == this) {
-	status = MARRIED;
+	      status = MARRIED;
         if( my_id.sex == FEMALE) {
           env->update_position_partner(this, partner->get_position().x, partner->get_position().y);
           env->clean_position(my_position.x, my_position.y);
@@ -200,7 +201,7 @@ int Agent::marry_me(Agent* proposer) {
   if(status == SINGLE) {
     // Will accept any proposal if single
     partner = proposer;
-    status = MARRIED;
+    status = TAKEN;
     return 1;
   }
   //else if (ps == WANDER_M){
@@ -210,7 +211,7 @@ int Agent::marry_me(Agent* proposer) {
             proposer->get_id().name, partner->get_id().sex, partner->get_id().name);
       new_partner = 1;
       partner = proposer;
-      status = MARRIED;
+      status = TAKEN;
       return 1;
     }
   }
@@ -251,9 +252,9 @@ int Agent::greater_pref(Agent* a) {
 }
 
 void Agent::step() {
-  // 3 possible walk patterns
-  // walks in line by line, column by column or in diagonals
-  // int pattern = rand() % 2;
+  // 8 possible walk patterns
+  // Left/right/top/bottom & diagonals
+
   bool success = false;
   int temp_x = 0;
   int temp_y = 0;
@@ -261,6 +262,46 @@ void Agent::step() {
 
   while(!success) {
     switch (walking_pattern) {
+      // case 0: // right
+      //   if(my_position.x+1 < N){
+      //     temp_x = my_position.x+1;
+      //     temp_y = my_position.y;
+      //   }else{
+      //     // Matrix bound
+      //     temp_x = 0;
+      //     temp_y = my_position.y+1;
+      //   }
+      // break;
+      // case 1: // left
+      //   if(my_position.x-1 >= 0){
+      //     temp_x = my_position.x-1;
+      //     temp_y = my_position.y;
+      //   }else{
+      //     // Matrix bound
+      //     temp_x = N-1;
+      //     temp_y = my_position.y+1;
+      //   }
+      // break;
+      // case 2:
+      // break;
+      // case 3:
+      // break;
+      // case 4:
+      // break;
+      // case 5:
+      // break;
+      // case 6:
+      // break;
+      // case 7:
+      // break;
+      // case 8:
+      //   temp_x = rand() % N-1;
+      //   temp_y = rand() % N-1;
+      //   break;
+      // default:
+      //   printf("Error walking!!!\n");
+      //   break;
+
       case 0:
         // keeps y and x incremenents
         if (my_position.x+1 < N) {
@@ -283,6 +324,7 @@ void Agent::step() {
           temp_y = 0;
         }
         break;
+
       case 2:
         // y and x incremenent
         if (my_position.x+1 < N && my_position.y+1 < N) {
@@ -315,7 +357,7 @@ void Agent::step() {
       success = false;
       try_out++;
       if (try_out >= 3)
-        walking_pattern = 3;
+        walking_pattern = 3; //randomize if not able to walk at any direction
     }
   }
 }
