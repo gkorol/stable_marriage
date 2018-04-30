@@ -48,15 +48,14 @@ void Agent::run() {
         ps = TO_REGISTRY;
       } else {
         step();
-        neighbor = env->get_nearst_agent(my_position,get_opposed_sex());
+        neighbor = env->get_nearest_agent(my_position,get_opposed_sex());
         if ( neighbor != NULL) {
           // Found someone cool
           printf("Found agent around me <%c,%d>\n", get_id().sex, get_id().name);
           if (neighbor->marry_me(this) == 1) {
             // Uhuuul! It said YES :)
             reg.x = 0; reg.y = 0;
-            printf("<%c,%d> said yes to <%c,%d>\n", neighbor->get_id().sex,
-                    neighbor->get_id().name, get_id().sex, get_id().name);
+            printf("<%c,%d> said yes to <%c,%d>\n", neighbor->get_id().sex,neighbor->get_id().name, get_id().sex, get_id().name);
             status = TAKEN;
             partner = neighbor;
             ps = TO_REGISTRY;
@@ -78,6 +77,7 @@ void Agent::run() {
       env->get_path_to_reg(my_position, reg);
 
       PrivatePath = env->get_path();
+
       if (!PrivatePath.empty()){
         ps = ROUTE_TO_REG;
       }else cout << "ERROR GETTING PATH TO REGISTRY!" << endl;
@@ -105,13 +105,15 @@ void Agent::run() {
     case WAIT_FIANCE:
       printf("Waiting for my fiance <%c,%d>\n", get_id().sex, get_id().name);
       if (env->is_agent_here(partner,reg.x, reg.y)){
-        if (status == TAKEN)
+        if (status == TAKEN){
+          // Already completed the private path to registry, release the exclusive path cells from grid
+          env->clear_path(PrivatePath);
           ps = MARRY;
-        else
+        } else
           ps = WANDER_S;
-      } else {
-        ps = WAIT_FIANCE;
-      }
+      } else
+          ps = WAIT_FIANCE;
+
       break;
 
     case MARRY:
@@ -158,7 +160,7 @@ void Agent::run() {
         else
           env->update_position_partner(this, partner->get_position().x, partner->get_position().y);
         // Somebody new?
-        neighbor = env->get_nearst_agent(my_position,get_opposed_sex());
+        neighbor = env->get_nearest_agent(my_position,get_opposed_sex());
         if ( neighbor != NULL && neighbor != partner ) {
           // Found someone cooler
           printf("Found agent around me <%c,%d>\n", get_id().sex, get_id().name);
@@ -202,6 +204,7 @@ int Agent::marry_me(Agent* proposer) {
     // Will accept any proposal if single
     partner = proposer;
     status = TAKEN;
+
     return 1;
   }
   //else if (ps == WANDER_M){

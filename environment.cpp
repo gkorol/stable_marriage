@@ -47,8 +47,9 @@ cell (*Environment::get_grid(void))[N][N] {
 }
 
 void Environment::print_cell(int x, int y) {
-  if(grid[x][y].path == 1){
-    printf("\e[105m * \e[0m");
+  if(grid[x][y].free == 1){
+    printf("\e[47m - \e[0m");
+
   } else if (grid[x][y].registry > 0) {
     printf("\e[104m C \e[0m");
 
@@ -63,9 +64,6 @@ void Environment::print_cell(int x, int y) {
 
   } else if (grid[x][y].agent != NULL) {
     printf("\e[102m %c \e[0m", grid[x][y].agent->get_id().sex);
-
-  } else if (grid[x][y].free == 1) {
-    printf("\e[47m - \e[0m");
   }
 }
 
@@ -89,6 +87,7 @@ void Environment::print_grid() {
 
 void Environment::print_agents() {
   int part;
+  printf("\n");
   for(int i=0; i<active_ags.size(); i++) {
     if (active_ags[i]->get_partner() != NULL)
       part = active_ags[i]->get_partner()->get_id().name;
@@ -204,7 +203,17 @@ stack<pos> Environment::get_path(){
   return path;
 }
 
-Agent* Environment::get_nearst_agent(pos p, char s) {
+void Environment::clear_path(stack<pos> pathDone){
+  pos p;
+
+  while(!pathDone.empty()){
+    p = pathDone.top();
+    grid[p.x][p.y].path = 0;
+    pathDone.pop();
+  }
+}
+
+Agent* Environment::get_nearest_agent(pos p, char s) {
   int x = p.x;
   int y = p.y;
 
@@ -328,7 +337,9 @@ bool Environment::isWithinGrid(int cur_x, int cur_y){
 }
 
 bool Environment::isUnBlocked(cell grid[N][N], int cur_x, int cur_y){
-  if(grid[cur_x][cur_y].free == 1){
+  // Ignore cells that are not free (occupied by walls, agents or registries)
+  // or that are currently being locked for a path (to avoid two agents using the same path)
+  if(grid[cur_x][cur_y].free == 1 && grid[cur_x][cur_y].path == 0){
     return true;
   }
   else return false;
@@ -360,7 +371,7 @@ void Environment::tracePath(Node costs[N][N], pos goal){
     int temp_x = costs[row][col].x;
     int temp_y = costs[row][col].y;
     //grid[row][col].free = 0;
-    //grid[row][col].path = 1;
+    grid[row][col].path = 1;
     row = temp_x;
     col = temp_y;
   }
