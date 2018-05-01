@@ -320,7 +320,7 @@ int Environment::is_agent_here(Agent* a, int x, int y) {
     for (int j=y-1;j<y+2;j++) {
       if ( i >= 0 && i < N && j >= 0 && j < N) {
         //printf("Looking for <%c,%d> at %d,%d around %d,%d\n", a->get_id().sex, a->get_id().name, i, j, x, y);
-        if( grid[i][j].agent == a)
+        if( grid[i][j].agent == a || grid[i][j].agent_partner == a)
           return 1;
         }
     }
