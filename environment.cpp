@@ -93,7 +93,7 @@ void Environment::print_agents() {
       part = active_ags[i]->get_partner()->get_id().name;
     else
       part = -1;
-    printf("Agent <%c,%d> @ %2d,%2d | status = %d | prefs: %d > %d > %d | partner: %d | state: %d | reg: %d,%d\n",
+    printf("Agent <%c,%d> @ %2d,%2d | status = %d | prefs: %d > %d > %d | partner: %2d | state: %d | reg: %d,%d\n",
       active_ags[i]->get_id().sex, active_ags[i]->get_id().name,
       active_ags[i]->get_position().x, active_ags[i]->get_position().y,
       active_ags[i]->get_status(),
@@ -119,22 +119,18 @@ int Environment::who_is_happy() {
       }
     }
   }
-  printf("Total of happy couples %d\n", total);
+  printf("Total of happy agents %d\n", total);
   return total;
 }
 
 int Environment::finished() {
    int total = 0;
    for (int i=0;i<active_ags.size(); i++) {
-	if (active_ags[i]->get_state() == WANDER_M)
-		total++;
+	    if (active_ags[i]->get_state() == WANDER_M)
+	     total++;
    }
-   //if (total == active_ags.size() && who_is_happy() == active_ags.size()/2){
-   if (total == active_ags.size()){
-	return 1;
-   } else {
-	return 0;
-   }
+  //  printf("TOTAL AGS MARRIED -> %d and %ld ACTIVE\n", total, active_ags.size());
+   return (total == active_ags.size());
 }
 
 void Environment::add_walls() {

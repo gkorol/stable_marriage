@@ -138,7 +138,6 @@ void Agent::run() {
       if (partner->get_partner() == this) {
 	      status = MARRIED;
         partner->status = MARRIED;
-
         if( my_id.sex == FEMALE) {
           env->update_position_partner(this, partner->get_position().x, partner->get_position().y);
           env->clean_position(my_position.x, my_position.y);
@@ -172,9 +171,9 @@ void Agent::run() {
       }
 
       if (new_partner) {
+        new_partner = 0;
         // ps = MARRY;
         ps = TO_REGISTRY;
-        new_partner = 0;
 	      break;
       }
 
@@ -209,6 +208,8 @@ void Agent::run() {
           } else {
             printf("Was not worthy <%c,%d>\n", get_id().sex, get_id().name);
           }
+        } else {
+          printf("Nobody around me <%c,%d>\n", get_id().sex, get_id().name);
         }
       ps = WANDER_M;
       break;
@@ -233,25 +234,21 @@ int Agent::get_state() {
 }
 
 int Agent::marry_me(Agent* proposer) {
-  if(status == SINGLE || status == DIVORCED) {
+  if(status == TAKEN){
+    // Neighbor is already heading to register to get married with another agent, ignores the proposal
+    return 0;
+  } else if(status == SINGLE || status == DIVORCED) {
     // Neighbor will accept any proposal if single or divorced
     partner = proposer;
     status = TAKEN;
     return 1;
-
-  }else if(status == TAKEN){
-    // Neighbor is already heading to register to get married with another agent, ignores the proposal
-    return 0;
-
-  } else {
-    // Married couples can find someone more interesting
-    if(greater_pref(proposer)) {
+  } else if(greater_pref(proposer)) {
+      // Married couples can find someone more interesting
       printf("<%c,%d> is accepting new partner <%c,%d>\n", proposer->get_id().sex,proposer->get_id().name, partner->get_id().sex, partner->get_id().name);
       new_partner = 1;
       partner = proposer;
-      status = TAKEN;
+      // status = TAKEN;
       return 1;
-    }
   }
   return 0;
 }
@@ -271,12 +268,17 @@ int Agent::greater_pref(Agent* a) {
   int partner_it = -1;
   int a_it = -1;
 
+  printf("Pref sizes -> %ld : ", preferences.size());
+
   for (int i=0;i<preferences.size(); i++) {
+      printf("%d ", preferences[i]);
       if(a->get_id().name == preferences[i])
         a_it = i;
       if(partner->get_id().name == preferences[i])
         partner_it = i;
   }
+
+  printf("a -> %d \n", a->get_id().name);
 
   if(a_it == -1 || partner_it == -1) {
     printf("Error getting preferences!\n");
