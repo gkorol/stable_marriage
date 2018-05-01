@@ -13,6 +13,7 @@ class Agent;
 // #define REG_TOTAL 4
 
 // Status
+#define DIVORCED 3
 #define TAKEN 2
 #define MARRIED 1
 #define SINGLE  0

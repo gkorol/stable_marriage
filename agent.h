@@ -32,6 +32,8 @@ public:
   int marry_me(Agent* proposer);  // Gets asked by other agents
 	void divorce_me();
 	int get_state();
+	void set_register(Agent* partner, pos reg);
+	pos get_registry();
 
 private:
   int propose(Agent* proposed);   // Asks another agent

@@ -81,48 +81,48 @@ int main(int argc, char** argv) {
 
   // Main loop
   for( t=0; t<MAX_IT; t++) {
-    // Print atualizando por ciclos
-    std::system("clear");
-    env->print_grid();
-    cout << "Cycle = " << t << endl;
-    if (t>0) {
-      env->print_agents();
-      sleep(1);
-    }
-
-    for( int i=0; i<(couples*2); i++) {
-      env->get_agent(i)->run();
-    }
+    // // Print atualizando por ciclos
+    // std::system("clear");
+    // env->print_grid();
+    // cout << "Cycle = " << t << endl;
+    // if (t>0) {
+    //   env->print_agents();
+    //   sleep(1);
+    // }
+    //
+    // for( int i=0; i<(couples*2); i++) {
+    //   env->get_agent(i)->run();
+    // }
     // Fim: Print atualizando por ciclos
 
     // Print default
-    // if (env->finished()){
-  	// //break;
-  	// if (stable == 0)
-  	// 	c_inicial = t;
-  	// if (stable == 5)
-  	// 	c_final = t;
-  	// if ((c_final - c_inicial) >= 5)
-  	// 	break;
-  	// else
-  	// 	stable = 0;
-    //
-  	// stable++;
-    // }
+    if (env->finished()){
+  	//break;
+  	if (stable == 0)
+  		c_inicial = t;
+  	if (stable == 5)
+  		c_final = t;
+  	if ((c_final - c_inicial) >= 5)
+  		break;
+  	else
+  		stable = 0;
 
-    // for( int i=0; i<(couples*2); i++) {
-    //   std::system("clear");
-    //   env->get_agent(i)->run();
-    //   cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
-    //   <<"> @ "<< t << " cycles" << endl;
-    //   cout << "Cycle = " << t << endl;
-    //   env->print_grid();
-    //   if (t>0) {
-    //   env->print_agents();
-    //     sleep(1);
-    //   }
-    //   cout << endl << endl;
-    // }
+  	stable++;
+    }
+
+    for( int i=0; i<(couples*2); i++) {
+      std::system("clear");
+      env->get_agent(i)->run();
+      cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
+      <<"> @ "<< t << " cycles" << endl;
+      cout << "Cycle = " << t << endl;
+      env->print_grid();
+      if (t>0) {
+      env->print_agents();
+        sleep(1);
+      }
+      cout << endl << endl;
+    }
     // FIm - Print default
 
     // Print que mostra somente o estado final na tela

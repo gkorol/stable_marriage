@@ -93,7 +93,7 @@ void Environment::print_agents() {
       part = active_ags[i]->get_partner()->get_id().name;
     else
       part = -1;
-    printf("Agent <%c,%d> @ %2d,%2d | status = %d | prefs: %d > %d > %d | partner: %d | state: %d\n",
+    printf("Agent <%c,%d> @ %2d,%2d | status = %d | prefs: %d > %d > %d | partner: %d | state: %d | reg: %d,%d\n",
       active_ags[i]->get_id().sex, active_ags[i]->get_id().name,
       active_ags[i]->get_position().x, active_ags[i]->get_position().y,
       active_ags[i]->get_status(),
@@ -101,7 +101,9 @@ void Environment::print_agents() {
       active_ags[i]->get_pref_at(1),
       active_ags[i]->get_pref_at(2),
       part,
-      active_ags[i]->get_state());
+      active_ags[i]->get_state(),
+      active_ags[i]->get_registry().x,active_ags[i]->get_registry().y);
+
   }
 }
 
@@ -286,9 +288,17 @@ void Environment::update_position_partner(Agent* a, int new_x, int new_y) {
   grid[a->get_position().x][a->get_position().y].couple = 0;
   grid[a->get_position().x][a->get_position().y].agent_partner = NULL;
 
+  if( a->get_status() == TAKEN) {
+    grid[new_x][new_y].couple = 2;
+  }
+
+  if( a->get_status() == MARRIED) {
+    grid[new_x][new_y].couple = 1;
+  }
+
   grid[new_x][new_y].free = INF;
   grid[new_x][new_y].agent_partner = a;
-  grid[new_x][new_y].couple = 1;
+
 }
 
 void Environment::clean_position(int x, int y) {
@@ -306,14 +316,10 @@ void Environment::set_couple(int x, int y) {
 }
 
 int Environment::is_agent_here(Agent* a, int x, int y) {
-
-  return 1; //ENQUANTO A-STAR NAO ESTA PRONTO
-
   for (int i=x-1;i<x+2;i++) {
     for (int j=y-1;j<y+2;j++) {
       if ( i >= 0 && i < N && j >= 0 && j < N) {
-        printf("Looking for <%c,%d> at %d,%d around %d,%d\n",
-                a->get_id().sex, a->get_id().name, i, j, x, y);
+        //printf("Looking for <%c,%d> at %d,%d around %d,%d\n", a->get_id().sex, a->get_id().name, i, j, x, y);
         if( grid[i][j].agent == a)
           return 1;
         }

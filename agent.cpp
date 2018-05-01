@@ -1,5 +1,10 @@
 #include "agent.h"
 
+bool operator!=(const pos &p1, const pos &p2) {
+  if(p1.x == p2.x && p1.y == p2.y){
+    return false;
+  }else return true;
+}
 
 // Agent::Agent(char sex, int name) : my_id.sex(sex), my_id.name(name) {
 Agent::Agent(char sex, int name, Environment* e){
@@ -22,6 +27,8 @@ Agent::Agent(char sex, int name, Environment* e){
   new_partner = 0;
   asked_divorce = 0;
   partner = NULL;
+  reg.x = 0;
+  reg.y = 0;
 }
 
 Agent::~Agent() {
@@ -45,6 +52,7 @@ void Agent::run() {
       printf("Single wandering <%c,%d>\n", get_id().sex, get_id().name);
       if (status == TAKEN) {
         // Said yes to someone
+        reg = env->get_nearest_registry(my_position);
         ps = TO_REGISTRY;
       } else {
         step();
@@ -54,14 +62,13 @@ void Agent::run() {
           printf("Found agent around me <%c,%d>\n", get_id().sex, get_id().name);
           if (neighbor->marry_me(this) == 1) {
             // Uhuuul! It said YES :)
-            reg.x = 0; reg.y = 0;
             printf("<%c,%d> said yes to <%c,%d>\n", neighbor->get_id().sex,neighbor->get_id().name, get_id().sex, get_id().name);
-            status = TAKEN;
             partner = neighbor;
+            status = TAKEN;
+            reg = env->get_nearest_registry(my_position);
             ps = TO_REGISTRY;
           } else {
-            printf("<%c,%d> was not interested in <%c,%d>\n", neighbor->get_id().sex,
-                    neighbor->get_id().name, get_id().sex, get_id().name);
+            printf("<%c,%d> was not interested in <%c,%d>\n", neighbor->get_id().sex, neighbor->get_id().name, get_id().sex, get_id().name);
             ps = WANDER_S;
           }
         } else {
@@ -72,15 +79,20 @@ void Agent::run() {
       break;
 
     case TO_REGISTRY:
-      reg = env->get_nearest_registry(my_position);
-      printf("Path to registry at %d,%d <%c,%d>\n", reg.x, reg.y, get_id().sex, get_id().name);
-      env->get_path_to_reg(my_position, reg);
+      if(partner->reg != reg){
+        set_register(partner, reg);   // Define the same target registry to the partner
+      }else{
 
-      PrivatePath = env->get_path();
+        printf("Path to registry at %d,%d <%c,%d>\n", reg.x, reg.y, get_id().sex, get_id().name);
+        env->get_path_to_reg(my_position, reg);
 
-      if (!PrivatePath.empty()){
-        ps = ROUTE_TO_REG;
-      }else cout << "ERROR GETTING PATH TO REGISTRY!" << endl;
+        PrivatePath = env->get_path();
+
+        if (!PrivatePath.empty()){
+          ps = ROUTE_TO_REG;
+        }else cout << "ERROR GETTING PATH TO REGISTRY!" << endl;
+
+      }
       break;
 
     case ROUTE_TO_REG:
@@ -121,6 +133,8 @@ void Agent::run() {
       printf("Getting married <%c,%d>\n", get_id().sex, get_id().name);
       if (partner->get_partner() == this) {
 	      status = MARRIED;
+        partner->status = MARRIED;
+
         if( my_id.sex == FEMALE) {
           env->update_position_partner(this, partner->get_position().x, partner->get_position().y);
           env->clean_position(my_position.x, my_position.y);
@@ -150,18 +164,20 @@ void Agent::run() {
 	      ps = DIVORCE;
 	      break;
       }
+
       if (new_partner) {
         ps = MARRY;
         new_partner = 0;
 	      break;
       }
-        if (my_id.sex == MALE)
+
+      if (my_id.sex == MALE)
           step();
-        else
+      else
           env->update_position_partner(this, partner->get_position().x, partner->get_position().y);
-        // Somebody new?
-        neighbor = env->get_nearest_agent(my_position,get_opposed_sex());
-        if ( neighbor != NULL && neighbor != partner ) {
+      // Somebody new?
+      neighbor = env->get_nearest_agent(my_position,get_opposed_sex());
+      if ( neighbor != NULL && neighbor != partner ) {
           // Found someone cooler
           printf("Found agent around me <%c,%d>\n", get_id().sex, get_id().name);
           if (greater_pref(neighbor)) {
@@ -191,6 +207,11 @@ id Agent::get_id() {
   return my_id;
 }
 
+pos Agent::get_registry() {
+  return reg;
+}
+
+
 char Agent::get_status(){
   return status;
 }
@@ -200,18 +221,20 @@ int Agent::get_state() {
 }
 
 int Agent::marry_me(Agent* proposer) {
-  if(status == SINGLE) {
-    // Will accept any proposal if single
+  if(status == SINGLE || status == DIVORCED) {
+    // Neighbor will accept any proposal if single or divorced
     partner = proposer;
     status = TAKEN;
-
     return 1;
-  }
-  //else if (ps == WANDER_M){
-  else {
+
+  }else if(status == TAKEN){
+    // Neighbor is already heading to register to get married with another agent, ignores the proposal
+    return 0;
+
+  } else {
+    // Married couples can find someone more interesting
     if(greater_pref(proposer)) {
-      printf("<%c,%d> is accepting new partner <%c,%d>\n", proposer->get_id().sex,
-            proposer->get_id().name, partner->get_id().sex, partner->get_id().name);
+      printf("<%c,%d> is accepting new partner <%c,%d>\n", proposer->get_id().sex,proposer->get_id().name, partner->get_id().sex, partner->get_id().name);
       new_partner = 1;
       partner = proposer;
       status = TAKEN;
@@ -399,4 +422,8 @@ char Agent::get_opposed_sex() {
   } else {
     return MALE;
   }
+}
+
+void Agent::set_register(Agent* partner, pos reg){
+  partner->reg = reg;
 }
