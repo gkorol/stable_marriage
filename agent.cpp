@@ -300,7 +300,7 @@ void Agent::step() {
 
   while(!success) {
     switch (walking_pattern) {
-      case 0: //Right
+      case 0: // E
         if(my_position.x+1 < N){
           temp_x = my_position.x+1;
           temp_y = my_position.y;
@@ -318,12 +318,12 @@ void Agent::step() {
         }else{
           // Matrix bound
           temp_x = N-1;
-          temp_y = N-1;
+          temp_y = my_position.y-1;
         }
 
       break;
 
-      case 2: //Left
+      case 2: // W
         if(my_position.x-1 >= 0){
           temp_x = my_position.x-1;
           temp_y = my_position.y;
@@ -340,13 +340,13 @@ void Agent::step() {
           temp_y = my_position.y+1;
         }else{
           // Matrix bound
-          temp_x = 0;
+          temp_x = my_position.x+1;
           temp_y = 0;
         }
 
       break;
 
-      case 4: //Top
+      case 4: // N
         if(my_position.y-1 >= 0){
           temp_x = my_position.x;
           temp_y = my_position.y-1;
@@ -357,18 +357,18 @@ void Agent::step() {
         }
       break;
 
-      case 5: //NE
-        if(my_position.x+1 < N && my_position.y-1 < N){
+      case 5: // NE
+        if(my_position.x+1 < N && my_position.y-1 >= 0){
           temp_x = my_position.x+1;
           temp_y = my_position.y-1;
         }else{
           // Matrix bound
-          temp_x = 0;
+          temp_x = my_position.x+1;
           temp_y = N-1;
         }
       break;
 
-      case 6: //Bottom
+      case 6: // S
         if(my_position.y+1 < N){
           temp_x = my_position.x;
           temp_y = my_position.y+1;
@@ -385,7 +385,7 @@ void Agent::step() {
           temp_y = my_position.y+1;
         }else{
           // Matrix bound
-          temp_x = N-1;
+          temp_x = my_position.x-1;
           temp_y = 0;
         }
       break;
@@ -398,85 +398,12 @@ void Agent::step() {
       default:
         printf("Error walking!!!\n");
       break;
-
-      // case 0:
-      //   // Right: keeps y and x incremenents
-      //   if (my_position.x+1 < N) {
-      //     temp_x = my_position.x+1;
-      //     temp_y = my_position.y;
-      //   } else {
-      //     // Matrix bound
-      //     temp_x = 0;
-      //     if(my_position.y+1 < N){
-      //       temp_y = my_position.y+1;
-      //     }else temp_y = 0;;
-      //   }
-      //   break;
-      // case 1:
-      //   // keeps x and y incremenents
-      //   if (my_position.y+1 < N) {
-      //     temp_x = my_position.x;
-      //     temp_y = my_position.y+1;
-      //   } else {
-      //     // Matrix bound
-      //     temp_y = 0;
-      //     if(my_position.x+1 < N){
-      //       temp_x = my_position.x+1
-      //     }else temp_x = 0;
-      //   }
-      //   break;
-      //
-      // case 2:
-      //   // y and x incremenent
-      //   if (my_position.x+1 < N && my_position.y+1 < N) {
-      //     temp_x = my_position.x+1;
-      //     temp_y = my_position.y+1;
-      //   } else {
-      //     // Matrix bound
-      //     temp_y = 0;
-      //     temp_x = 0;
-      //   }
-      //   break;
-      //
-      // case 3:
-      //   // keeps y and x decrements
-      //   if (my_position.x-1 >= 0) {
-      //     temp_x = my_position.x-1;
-      //     temp_y = my_position.y;
-      //   } else {
-      //     // Matrix bound
-      //     temp_x = 0;
-      //     temp_y = my_position.y+1;
-      //   }
-      //   break;
-      //
-      // case 4:
-      //   // keeps x and y incremenents
-      //   if (my_position.y-1 >= 0) {
-      //     temp_x = my_position.x;
-      //     temp_y = my_position.y-1;
-      //   } else {
-      //     // Matrix bound
-      //     temp_x = my_position.x+1;
-      //     temp_y = 0;
-      //   }
-      //   break;
-      //
-      // case 5:
-      //   temp_x = rand() % N-1;
-      //   temp_y = rand() % N-1;
-      //   break;
-      //
-      // default:
-      //   printf("Error walking!!!\n");
-      //   break;
     }
     if (env->free_position(temp_x,temp_y) == 1){
       env->update_position(this, temp_x, temp_y);
       my_position.x = temp_x;
       my_position.y = temp_y;
       success = true;
-      //walking_pattern = rand() % 8;
       if (walking_pattern == 8)
         walking_pattern = 0;
 

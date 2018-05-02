@@ -82,21 +82,21 @@ int main(int argc, char** argv) {
   // Main loop
   for( t=0; t<MAX_IT; t++) {
     // // Print default
-    // if (env->finished()) {
-    // 	//break;
-    // 	if (stable == 0) c_inicial = t;
-    // 	if (stable == 5) c_final = t;
-    //   stable++;
-    //
-    // 	if ( ( c_final - c_inicial) >= 5 )
-    // 		break;
-    //   // cout << "c_final : " << c_final << " - c_inicial : " << c_inicial << " = " << c_final - c_inicial << endl;
-    // } else {
-    //   stable = 0;
-    //   c_inicial = 0;
-    //   c_final = 0;
-    //   // cout << "Not finished!!" << endl;
-    // }
+    if (env->finished()) {
+    	//break;
+    	if (stable == 0) c_inicial = t;
+    	if (stable == 5) c_final = t;
+      stable++;
+    
+    	if ( ( c_final - c_inicial) >= 5 )
+    		break;
+      // cout << "c_final : " << c_final << " - c_inicial : " << c_inicial << " = " << c_final - c_inicial << endl;
+    } else {
+      stable = 0;
+      c_inicial = 0;
+      c_final = 0;
+      // cout << "Not finished!!" << endl;
+    }
     //
     // for( int i=0; i<(couples*2); i++) {
     //   // std::system("clear");

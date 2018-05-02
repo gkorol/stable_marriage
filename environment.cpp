@@ -93,7 +93,7 @@ void Environment::print_agents() {
       part = active_ags[i]->get_partner()->get_id().name;
     else
       part = -1;
-    printf("Agent <%c,%d> @ %2d,%2d | status = %d | prefs: %d > %d > %d | partner: %2d | state: %d | reg: %d,%d\n",
+    printf("Agent <%c,%2d> @ %2d,%2d | status = %d | prefs: %d > %d > %d | partner: %2d | state: %d | reg: %2d,%2d\n",
       active_ags[i]->get_id().sex, active_ags[i]->get_id().name,
       active_ags[i]->get_position().x, active_ags[i]->get_position().y,
       active_ags[i]->get_status(),
@@ -252,7 +252,7 @@ pos Environment::get_nearest_registry(pos p) {
 int Environment::free_position(int x, int y) {
   const float INF = std::numeric_limits<float>::infinity();
 
-  if (x > 0 && x < N && y > 0 && y < N)
+  if (x >= 0 && x < N && y >= 0 && y < N)
     return grid[x][y].free;
   else
     return INF;
