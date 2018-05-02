@@ -81,36 +81,53 @@ int main(int argc, char** argv) {
 
   // Main loop
   for( t=0; t<MAX_IT; t++) {
-    // Print default
-    if (env->finished()) {
-    	//break;
-    	if (stable == 0) c_inicial = t;
-    	if (stable == 5) c_final = t;
-      stable++;
+    // // Print default
+    // if (env->finished()) {
+    // 	//break;
+    // 	if (stable == 0) c_inicial = t;
+    // 	if (stable == 5) c_final = t;
+    //   stable++;
+    //
+    // 	if ( ( c_final - c_inicial) >= 5 )
+    // 		break;
+    //   // cout << "c_final : " << c_final << " - c_inicial : " << c_inicial << " = " << c_final - c_inicial << endl;
+    // } else {
+    //   stable = 0;
+    //   c_inicial = 0;
+    //   c_final = 0;
+    //   // cout << "Not finished!!" << endl;
+    // }
+    //
+    // for( int i=0; i<(couples*2); i++) {
+    //   // std::system("clear");
+    //   env->get_agent(i)->run();
+    //   // cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
+    //   // <<"> @ "<< t << " cycles" << endl;
+    //   // cout << "Cycle = " << t << endl;
+    //   // env->print_grid();
+    //   // if (t>0) {
+    //   // env->print_agents();
+    //   //   usleep(500000);
+    //   // }
+    //   // cout << endl << endl;
+    // }
+    // //FIM - Print default
 
-    	if ( ( c_final - c_inicial) >= 5 )
-    		break;
-      // cout << "c_final : " << c_final << " - c_inicial : " << c_inicial << " = " << c_final - c_inicial << endl;
-    } else {
-      stable = 0;
-      c_inicial = 0;
-      c_final = 0;
-      // cout << "Not finished!!" << endl;
-    }
+    // Print atualizando por ciclos
+        std::system("clear");
+        env->print_grid();
+        cout << "Cycle = " << t << endl;
+        if (t>0) {
+          env->print_agents();
+          sleep(1);
+        }
 
-    for( int i=0; i<(couples*2); i++) {
-      // std::system("clear");
-      env->get_agent(i)->run();
-      // cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
-      // <<"> @ "<< t << " cycles" << endl;
-      // cout << "Cycle = " << t << endl;
-      // env->print_grid();
-      // if (t>0) {
-      // env->print_agents();
-      //   usleep(500000);
-      // }
-      // cout << endl << endl;
-    }
+        for( int i=0; i<(couples*2); i++) {
+          env->get_agent(i)->run();
+        }
+      // Fim: Print atualizando por ciclos
+
+
   }
 
   // Print que mostra somente o estado final na tela

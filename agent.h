@@ -36,7 +36,6 @@ public:
 	pos get_registry();
 
 private:
-  int propose(Agent* proposed);   // Asks another agent
   char get_opposed_sex();
 	int greater_pref(Agent* a);
 

@@ -4,10 +4,10 @@
 class Agent;
 
 // Maximum number of iterations
-#define MAX_IT 3000
+#define MAX_IT 30000
 
 // Grid size
-#define N 10
+#define N 20
 
 // Status
 #define DIVORCED 3

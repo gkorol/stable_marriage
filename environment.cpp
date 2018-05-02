@@ -294,7 +294,6 @@ void Environment::update_position_partner(Agent* a, int new_x, int new_y) {
 
   grid[new_x][new_y].free = INF;
   grid[new_x][new_y].agent_partner = a;
-
 }
 
 void Environment::clean_position(int x, int y) {

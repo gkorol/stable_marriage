@@ -15,7 +15,7 @@ Agent::Agent(char sex, int name, Environment* e){
       seeded = true;
   }
 
-  walking_pattern = rand() % 2;
+  walking_pattern = rand() % 7;
 
   my_id.sex = sex;
   my_id.name = name;
@@ -44,8 +44,7 @@ void Agent::run() {
 
   switch (ps) {
     case INIT:
-      // Init procedures ?
-      ps = WANDER_S;
+        ps = WANDER_S;
       break;
 
     case WANDER_S:
@@ -224,7 +223,6 @@ pos Agent::get_registry() {
   return reg;
 }
 
-
 char Agent::get_status(){
   return status;
 }
@@ -292,7 +290,7 @@ int Agent::greater_pref(Agent* a) {
 }
 
 void Agent::step() {
-  // 8 possible walk patterns
+  // 8 possible walk patterns + 1 to randomize it
   // Left/right/top/bottom & diagonals
 
   bool success = false;
@@ -302,94 +300,195 @@ void Agent::step() {
 
   while(!success) {
     switch (walking_pattern) {
-      case 0:
-        // keeps y and x incremenents
-        if (my_position.x+1 < N) {
+      case 0: //Right
+        if(my_position.x+1 < N){
           temp_x = my_position.x+1;
           temp_y = my_position.y;
-        } else {
+        }else {
           // Matrix bound
           temp_x = 0;
           temp_y = my_position.y+1;
         }
-        break;
-      case 1:
-        // keeps x and y incremenents
-        if (my_position.y+1 < N) {
-          temp_x = my_position.x;
-          temp_y = my_position.y+1;
-        } else {
-          // Matrix bound
-          temp_x = my_position.x+1;
-          temp_y = 0;
-        }
-        break;
+      break;
 
-      case 2:
-        // y and x incremenent
-        if (my_position.x+1 < N && my_position.y+1 < N) {
-          temp_x = my_position.x+1;
-          temp_y = my_position.y+1;
-        } else {
+      case 1: // NW
+        if(my_position.x-1 >= 0 && my_position.y-1 >= 0){
+          temp_x = my_position.x-1;
+          temp_y = my_position.y-1;
+        }else{
           // Matrix bound
-          temp_x = my_position.y-1;
-          temp_y = my_position.x;
+          temp_x = N-1;
+          temp_y = N-1;
         }
-        break;
 
-      case 3:
-        // keeps y and x decrements
-        if (my_position.x-1 >= 0) {
+      break;
+
+      case 2: //Left
+        if(my_position.x-1 >= 0){
           temp_x = my_position.x-1;
           temp_y = my_position.y;
-        } else {
+        }else {
           // Matrix bound
-          temp_x = 0;
+          temp_x = N-1;
           temp_y = my_position.y+1;
         }
-        break;
+      break;
 
-      case 4:
-        // keeps x and y incremenents
-        if (my_position.y-1 >= 0) {
+      case 3: // SE
+        if(my_position.x+1 < N && my_position.y+1 < N){
+          temp_x = my_position.x+1;
+          temp_y = my_position.y+1;
+        }else{
+          // Matrix bound
+          temp_x = 0;
+          temp_y = 0;
+        }
+
+      break;
+
+      case 4: //Top
+        if(my_position.y-1 >= 0){
           temp_x = my_position.x;
           temp_y = my_position.y-1;
-        } else {
+        }else {
+          // Matrix bound
+          temp_x = my_position.x+1;
+          temp_y = N-1;
+        }
+      break;
+
+      case 5: //NE
+        if(my_position.x+1 < N && my_position.y-1 < N){
+          temp_x = my_position.x+1;
+          temp_y = my_position.y-1;
+        }else{
+          // Matrix bound
+          temp_x = 0;
+          temp_y = N-1;
+        }
+      break;
+
+      case 6: //Bottom
+        if(my_position.y+1 < N){
+          temp_x = my_position.x;
+          temp_y = my_position.y+1;
+        }else {
           // Matrix bound
           temp_x = my_position.x+1;
           temp_y = 0;
         }
-        break;
+      break;
 
-      case 5:
+      case 7: // SW
+        if(my_position.x-1 >= 0 && my_position.y+1 < N){
+          temp_x = my_position.x-1;
+          temp_y = my_position.y+1;
+        }else{
+          // Matrix bound
+          temp_x = N-1;
+          temp_y = 0;
+        }
+      break;
+
+      case 8:
         temp_x = rand() % N-1;
         temp_y = rand() % N-1;
-        break;
+      break;
 
       default:
         printf("Error walking!!!\n");
-        break;
+      break;
+
+      // case 0:
+      //   // Right: keeps y and x incremenents
+      //   if (my_position.x+1 < N) {
+      //     temp_x = my_position.x+1;
+      //     temp_y = my_position.y;
+      //   } else {
+      //     // Matrix bound
+      //     temp_x = 0;
+      //     if(my_position.y+1 < N){
+      //       temp_y = my_position.y+1;
+      //     }else temp_y = 0;;
+      //   }
+      //   break;
+      // case 1:
+      //   // keeps x and y incremenents
+      //   if (my_position.y+1 < N) {
+      //     temp_x = my_position.x;
+      //     temp_y = my_position.y+1;
+      //   } else {
+      //     // Matrix bound
+      //     temp_y = 0;
+      //     if(my_position.x+1 < N){
+      //       temp_x = my_position.x+1
+      //     }else temp_x = 0;
+      //   }
+      //   break;
+      //
+      // case 2:
+      //   // y and x incremenent
+      //   if (my_position.x+1 < N && my_position.y+1 < N) {
+      //     temp_x = my_position.x+1;
+      //     temp_y = my_position.y+1;
+      //   } else {
+      //     // Matrix bound
+      //     temp_y = 0;
+      //     temp_x = 0;
+      //   }
+      //   break;
+      //
+      // case 3:
+      //   // keeps y and x decrements
+      //   if (my_position.x-1 >= 0) {
+      //     temp_x = my_position.x-1;
+      //     temp_y = my_position.y;
+      //   } else {
+      //     // Matrix bound
+      //     temp_x = 0;
+      //     temp_y = my_position.y+1;
+      //   }
+      //   break;
+      //
+      // case 4:
+      //   // keeps x and y incremenents
+      //   if (my_position.y-1 >= 0) {
+      //     temp_x = my_position.x;
+      //     temp_y = my_position.y-1;
+      //   } else {
+      //     // Matrix bound
+      //     temp_x = my_position.x+1;
+      //     temp_y = 0;
+      //   }
+      //   break;
+      //
+      // case 5:
+      //   temp_x = rand() % N-1;
+      //   temp_y = rand() % N-1;
+      //   break;
+      //
+      // default:
+      //   printf("Error walking!!!\n");
+      //   break;
     }
     if (env->free_position(temp_x,temp_y) == 1){
       env->update_position(this, temp_x, temp_y);
       my_position.x = temp_x;
       my_position.y = temp_y;
       success = true;
-      if (walking_pattern == 5)
+      //walking_pattern = rand() % 8;
+      if (walking_pattern == 8)
         walking_pattern = 0;
+
     } else {
       // change walking pattern and try again
-      walking_pattern = rand() % 4;
+      walking_pattern = rand() % 7;
       success = false;
       try_out++;
-      if (try_out >= 3)
-        walking_pattern = 5; //randomize if not able to walk in any direction
+      if (try_out >= 5)
+        walking_pattern = 8; //randomize if not able to walk in any direction
     }
   }
-}
-
-int Agent::propose(Agent* proposed) {
-  proposed->marry_me(this);
 }
 
 pos Agent::get_position() {
