@@ -93,7 +93,7 @@ void Environment::print_agents() {
       part = active_ags[i]->get_partner()->get_id().name;
     else
       part = -1;
-    printf("Agent <%c,%2d> @ %2d,%2d | status = %d | prefs: %d > %d > %d | partner: %2d | state: %d | reg: %2d,%2d\n",
+    printf("Agent <%c,%2d> @ %2d,%2d | status = %d | prefs: %2d > %2d > %2d | partner: %2d | state: %d | reg: %2d,%2d\n",
       active_ags[i]->get_id().sex, active_ags[i]->get_id().name,
       active_ags[i]->get_position().x, active_ags[i]->get_position().y,
       active_ags[i]->get_status(),

@@ -80,7 +80,7 @@ void Agent::run() {
     case TO_REGISTRY:
       if(partner->reg != reg){
         set_register(partner, reg);   // Define the same target registry to the partner
-      } else{
+      } else {
         printf("Path to registry at %d,%d <%c,%d>\n", reg.x, reg.y, get_id().sex, get_id().name);
         env->get_path_to_reg(my_position, reg);
         PrivatePath = env->get_path();
@@ -115,11 +115,15 @@ void Agent::run() {
     case WAIT_FIANCE:
       printf("Waiting for my fiance <%c,%d>\n", get_id().sex, get_id().name);
       if (env->is_agent_here(partner,reg.x, reg.y)){
-        if (status == TAKEN || status == MARRIED) { // MARRIED para divorcio...
+        if (status == TAKEN ) {
           // Already completed the private path to registry, release the exclusive path cells from grid
           env->clear_path(PrivatePath);
           ps = MARRY;
-        } else {
+        // } else if (status == MARRIED) {
+        //   env->clear_path(PrivatePath);
+        //   ps = DIVORCE;
+        }
+        else {
           // Falhou por algum motivo no meio do caminho
           ps = WANDER_S;
           status = SINGLE;
@@ -136,45 +140,33 @@ void Agent::run() {
       printf("Getting married <%c,%d>\n", get_id().sex, get_id().name);
       if (partner->get_partner() == this) {
 	      status = MARRIED;
-        partner->status = MARRIED;
+        // partner->status = MARRIED;
         if( my_id.sex == FEMALE) {
           env->update_position_partner(this, partner->get_position().x, partner->get_position().y);
           env->clean_position(my_position.x, my_position.y);
         }
         ps = WANDER_M;
-      } else {
-        ps = DIVORCE;
       }
+      // else {
+      //   ps = DIVORCE;
+      // }
       break;
 
     case DIVORCE:
-      printf("Getting divorce <%c,%d>\n", get_id().sex, get_id().name);
-      status = SINGLE;
-      partner = NULL;
-      env->clean_position_partner(my_position.x,my_position.y);
-      // Walk some distance, so they dont remarry
-      step();
-      step();
-      step();
-      step();
-      ps = WANDER_S;
+      // printf("Getting divorce <%c,%d>\n", get_id().sex, get_id().name);
+      // status = SINGLE;
+      // // partner = NULL;
+      // env->clean_position_partner(my_position.x,my_position.y);
+      // // Walk some distance, so they dont remarry
+      // step();
+      // step();
+      // step();
+      // step();
+      // ps = WANDER_S;
       break;
 
     case WANDER_M:
       printf("Married wandering <%c,%d>\n", get_id().sex, get_id().name);
-      if (asked_divorce) {
-	      asked_divorce = 0;
-	      // ps = DIVORCE;
-        ps = TO_REGISTRY;
-	      break;
-      }
-
-      if (new_partner) {
-        new_partner = 0;
-        // ps = MARRY;
-        ps = TO_REGISTRY;
-	      break;
-      }
 
       if (my_id.sex == MALE) {
         // Not to be sexist, but we had to pick one to "lead" the walk
@@ -191,15 +183,16 @@ void Agent::run() {
           printf("Found agent around me <%c,%d>\n", get_id().sex, get_id().name);
           if (greater_pref(neighbor)) {
             // Found someone cooler
-            if (neighbor->marry_me(this) == 1) {
+            if (neighbor->marry_me(this)) {
               // Uhuuul! It said YES :)
-              reg.x = 0; reg.y = 0;
-              partner->divorce_me();
+              if (partner->get_partner() == this && partner->get_status() == MARRIED) {
+                partner->divorce_me();
+              }
               printf("<%c,%d> said yes to <%c,%d>\n", neighbor->get_id().sex,
                       neighbor->get_id().name, get_id().sex, get_id().name);
               partner = neighbor;
-              ps = TO_REGISTRY;
-              // ps = MARRY;
+              status = MARRIED;
+              ps = WANDER_M;
             } else {
               printf("<%c,%d> was not interested in <%c,%d>\n", neighbor->get_id().sex,
                       neighbor->get_id().name, get_id().sex, get_id().name);
@@ -235,17 +228,22 @@ int Agent::marry_me(Agent* proposer) {
   if(status == TAKEN){
     // Neighbor is already heading to register to get married with another agent, ignores the proposal
     return 0;
-  } else if(status == SINGLE || status == DIVORCED) {
+  } else if(status == SINGLE) {
     // Neighbor will accept any proposal if single or divorced
     partner = proposer;
     status = TAKEN;
     return 1;
-  } else if(greater_pref(proposer)) {
+  } else if(greater_pref(proposer) && status == MARRIED) {
       // Married couples can find someone more interesting
       printf("<%c,%d> is accepting new partner <%c,%d>\n", proposer->get_id().sex,proposer->get_id().name, partner->get_id().sex, partner->get_id().name);
-      new_partner = 1;
+      if (partner->get_partner() == this) {
+        partner->divorce_me();
+      }
       partner = proposer;
-      // status = TAKEN;
+      status = MARRIED;
+      // env->clean_position_partner(my_position.x,my_position.y);
+      // env->update_position(this, my_position.x, my_position.y);
+      ps = WANDER_M;
       return 1;
   }
   return 0;
@@ -253,13 +251,27 @@ int Agent::marry_me(Agent* proposer) {
 
 void Agent::divorce_me() {
   //status = SINGLE;
-  asked_divorce = 1;
-  //partner = NULL;
+  // asked_divorce = 1;
   //env->clean_position(my_position.x,my_position.y);
   //env->clean_position_partner(my_position.x,my_position.y);
   //step();
 
   //ps = DIVORCE;
+
+  printf("Getting divorce <%c,%d>\n", get_id().sex, get_id().name);
+  if (my_id.sex == FEMALE) {
+    env->clean_position_partner(partner->get_position().x,partner->get_position().y);
+  }
+  status = SINGLE;
+  partner = NULL;
+  // env->update_position(this, my_position.x, my_position.y);
+  // Walk some distance, so they dont remarry
+  step();
+  step();
+  step();
+  step();
+  ps = WANDER_S;
+
 }
 
 int Agent::greater_pref(Agent* a) {

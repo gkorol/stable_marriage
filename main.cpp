@@ -59,7 +59,6 @@ int main(int argc, char** argv) {
         Agent* m = new Agent(MALE,line_c,env);
         m->init_prefs(pref);
         env->add_agent(m);
-        // m->print_prefs();
       } else if (line_c > couples) {
         // Female lines
         vector<int> pref;
@@ -69,10 +68,9 @@ int main(int argc, char** argv) {
         while (iss >> number)
           pref.push_back(number);
 
-        Agent* f = new Agent(FEMALE,line_c-3,env);
+        Agent* f = new Agent(FEMALE,line_c-couples,env);
         f->init_prefs(pref);
         env->add_agent(f);
-        // f->print_prefs();
       }
       line_c++;
     }
@@ -87,7 +85,7 @@ int main(int argc, char** argv) {
     	if (stable == 0) c_inicial = t;
     	if (stable == 5) c_final = t;
       stable++;
-    
+
     	if ( ( c_final - c_inicial) >= 5 )
     		break;
       // cout << "c_final : " << c_final << " - c_inicial : " << c_inicial << " = " << c_final - c_inicial << endl;
@@ -114,13 +112,13 @@ int main(int argc, char** argv) {
     // //FIM - Print default
 
     // Print atualizando por ciclos
-        std::system("clear");
-        env->print_grid();
-        cout << "Cycle = " << t << endl;
-        if (t>0) {
-          env->print_agents();
-          sleep(1);
-        }
+        // std::system("clear");
+        // env->print_grid();
+        // cout << "Cycle = " << t << endl;
+        // if (t>0) {
+        //   env->print_agents();
+        //   sleep(1);
+        // }
 
         for( int i=0; i<(couples*2); i++) {
           env->get_agent(i)->run();
