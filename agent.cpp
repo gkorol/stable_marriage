@@ -6,7 +6,6 @@ bool operator!=(const pos &p1, const pos &p2) {
   }else return true;
 }
 
-// Agent::Agent(char sex, int name) : my_id.sex(sex), my_id.name(name) {
 Agent::Agent(char sex, int name, Environment* e){
   static bool seeded = false;
 
@@ -119,9 +118,6 @@ void Agent::run() {
           // Already completed the private path to registry, release the exclusive path cells from grid
           env->clear_path(PrivatePath);
           ps = MARRY;
-        // } else if (status == MARRIED) {
-        //   env->clear_path(PrivatePath);
-        //   ps = DIVORCE;
         }
         else {
           // Falhou por algum motivo no meio do caminho
@@ -147,9 +143,6 @@ void Agent::run() {
         }
         ps = WANDER_M;
       }
-      // else {
-      //   ps = DIVORCE;
-      // }
       break;
 
     case DIVORCE:
@@ -241,8 +234,6 @@ int Agent::marry_me(Agent* proposer) {
       }
       partner = proposer;
       status = MARRIED;
-      // env->clean_position_partner(my_position.x,my_position.y);
-      // env->update_position(this, my_position.x, my_position.y);
       ps = WANDER_M;
       return 1;
   }
@@ -250,21 +241,12 @@ int Agent::marry_me(Agent* proposer) {
 }
 
 void Agent::divorce_me() {
-  //status = SINGLE;
-  // asked_divorce = 1;
-  //env->clean_position(my_position.x,my_position.y);
-  //env->clean_position_partner(my_position.x,my_position.y);
-  //step();
-
-  //ps = DIVORCE;
-
   printf("Getting divorce <%c,%d>\n", get_id().sex, get_id().name);
   if (my_id.sex == FEMALE) {
     env->clean_position_partner(partner->get_position().x,partner->get_position().y);
   }
   status = SINGLE;
   partner = NULL;
-  // env->update_position(this, my_position.x, my_position.y);
   // Walk some distance, so they dont remarry
   step();
   step();

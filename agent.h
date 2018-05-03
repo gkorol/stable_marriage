@@ -49,7 +49,7 @@ private:
   char status;              // SINGLE, TAKEN or MARRIED
   vector<int> preferences;  // Vector of preferences
   Environment* env;         // Pointer to environment object
-	stack<pos> PrivatePath;					// Vector of positions that lead to the registry
+	stack<pos> PrivatePath;		// Vector of positions that lead to the registry
 	int walking_pattern;			// Keeps track of the walking pattern through cycles
 };
 

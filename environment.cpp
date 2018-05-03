@@ -1,14 +1,5 @@
 #include "environment.h"
 
-// the top of the priority queue is the greatest element by default,
-// but we want the smallest, so flip the sign
-// bool operator<(const Node &n1, const Node &n2) {
-//   return n1.cost > n2.cost;
-// }
-// bool operator==(const Node &n1, const Node &n2) {
-//   return (n1.x == n2.x && n1.y == n2.y);
-// }
-
 bool operator<(const Node &n1, const Node &n2) {
   return n1.f > n2.f;
 }
@@ -380,12 +371,6 @@ void Environment::tracePath(Node costs[N][N], pos goal){
   p_temp.x = row;
   p_temp.y = col;
   path.push(p_temp);
-
-  // while(!path.empty()){
-  //   p = path.top();
-  //   printf("-> (%d,%d) \n", p.x, p.y);
-  //   path.pop();
-  // }
 
   return;
 }

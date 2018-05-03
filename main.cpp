@@ -95,30 +95,15 @@ int main(int argc, char** argv) {
       c_final = 0;
       // cout << "Not finished!!" << endl;
     }
-    //
-    // for( int i=0; i<(couples*2); i++) {
-    //   // std::system("clear");
-    //   env->get_agent(i)->run();
-    //   // cout << "Running agent <"<<env->get_agent( i )->get_id().sex<<","<<env->get_agent( i )->get_id().name
-    //   // <<"> @ "<< t << " cycles" << endl;
-    //   // cout << "Cycle = " << t << endl;
-    //   // env->print_grid();
-    //   // if (t>0) {
-    //   // env->print_agents();
-    //   //   usleep(500000);
-    //   // }
-    //   // cout << endl << endl;
-    // }
-    // //FIM - Print default
 
     // Print atualizando por ciclos
-        // std::system("clear");
-        // env->print_grid();
-        // cout << "Cycle = " << t << endl;
-        // if (t>0) {
-        //   env->print_agents();
-        //   sleep(1);
-        // }
+        std::system("clear");
+        env->print_grid();
+        cout << "Cycle = " << t << endl;
+        if (t>0) {
+          env->print_agents();
+          sleep(1);
+        }
 
         for( int i=0; i<(couples*2); i++) {
           env->get_agent(i)->run();
