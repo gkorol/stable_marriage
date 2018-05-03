@@ -11,7 +11,5 @@ Stable Marriage Problem - AI class assignment
 ========================================================================
 
 ////////////////////////////////////////////////////////////////////////
-Files:
 
-  main.cpp
-    Main File
+Video demo: https://youtu.be/uzgQ-aJOOTc
